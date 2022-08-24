@@ -1,0 +1,2189 @@
+objects
+let x = {"key":"value,key2var:myvar};
+
+not good objects, slow down system
+x = new String();        // Declares x as a String object
+y = new Number();        // Declares y as a Number object
+z = new Boolean();       // Declares z as a Boolean object
+let x = "John";
+let y = new String("John");
+let z = new String("John");
+x==y -> true
+x===y -> false
+y==z -> false , objects can't be compared
+
+
+events
+<element event='some JavaScript'>
+<element event="some JavaScript">
+<button onclick="document.getElementById('demo').innerHTML = Date()">The time is?</button>
+<button onclick="this.innerHTML = Date()">The time is?</button>
+<input type="text" onkeyup="showHint(this.value)" />
+
+strings
+" text "
+' text '
+' "text" '
+" 'text' "
+myString.length - characters number
+escaping \' \" \\
+" \"text\" "
+also escaping can be used for next, old no sence in HTML,
+from faxmachines controlling:
+\b - Backspace
+\f - Form Feed
+\n - New Line
+\r - Carriage Return
+\t - Horizontal Tabulator
+\v - Vertical Tabulator
+
+Strings are immutable: Strings cannot be changed, only replaced.
+
+All methods return new string.
+
+string.replace()
+let text = "Please visit Microsoft or Microsoft!";
+let newText = text.replace(/MICROSOFT/i, "W3Schools"); //with ignore case regexp, but only first match
+let newText = text.replace(/Microsoft/g, "W3Schools"); //all matches regexp
+string.concat()
+let text = text1.concat(" ", text2); //join two or more strings
+
+string.padStart / .padEnd
+"5".padStart(4,0); -> 0005
+"5".padEnd(4,0); -> 5000
+
+extracting
+"A5".charAt(0); -> A
+"HE".charCodeAt(0); -> 72
+"HE"[0] -> H
+If no character is found, [ ] returns undefined, while charAt() returns an empty string.
+It is read only. str[0] = "A" gives no error (but does not work!)
+
+string to array
+"H E".split() -> ["H E"]
+"H E".split("") -> ["H","","E"]
+"H E".split(" ") -> ["H","E"]
+
+search
+"abca".indexOf("a", ?startIndex) -> 0
+"abca".lastIndexOf("a", ?startIndex) -> 3
+return -1 if not found
+"abca".search("a") -> 0
+"abcaA".match(/a/g) -> ["a","a"]
+"abcaA".match(/a/gi) -> ["a","a","A"]
+"abca".includes("A", ?startIndex) -> false
+"abca".startsWith("a", ?startIndex) -> true
+"abca".endsWith("c", (?length) 3) -> true - first 3 symbols ends with "c"
+
+back-tics syntax, (not a single quotes base), can include both ' " inside
+let text = ` It's "Hello World!" `;
+and multiline strings allowed
+let text = ` It's
+"Hello World!" `;
+and template literals ${} inside ` ` back-tics allowed
+let s1 = "s"; let s2 = "ss";
+` ${s1+1} ${s2+2} ` -> " s1 ss2 "
+
+numbers . Only one type of numbers realized, 64-bit Floating Point.
+Stored as double precision floating point numbers, following the international IEEE 754 standard.
+let x = 123e5;    // 12300000
+let y = 123e-5;   // 0.00123
+let z = 1.2;
+let a = 1;
+Integers accurate up to 15 digits, then defects happen like 999...9 -> 1000...0
+floats is not accurate
+0.2 + 0.1 -> 0.30000000000000004
+can be solved using
+let x = (0.2 * 10 + 0.1 * 10) / 10;
+
++ used for concatination for strings
+"10"+"20" -> "1020"
+10+"20" -> "1020"
+but
+"100" / "10" -> 10
+"100" * "10" -> 1000
+"100" - "10" -> 90
+and 10 1000 90 typeof -> number
+
+NaN - is not a legal number. but still number
+isNaN(100 / "Apple") -> true
+typeof NaN -> number
+100 / "Apple" -> NaN
+NaN + 5 -> NaN
+NaN + "5" -> "NaN5"
+
+"100" / "" -> infinity
+typeof infinity -> number
+-infinity too available, and just sign about
+you use number outside available range.
+
+hexadecimal starts with 0x
+let x = 0xFF;
+
+Never write a number with a leading zero.
+It can be interpreted as octal.
+
+represent decimal (10 based) as not decimal
+
+let myNumber = 32;
+myNumber.toString(10); -> 32
+myNumber.toString(32); -> 10
+myNumber.toString(16); -> 20
+myNumber.toString(8); -> 40
+myNumber.toString(2); -> 100000
+
+number methods
+(123).toString() -> "123" , need braces
+123.4.toString() -> "123.4"
+(9).toExponential(5) -> "9.00000e+0" , need braces
+9.565.toExponential(5) -> "9.56500e+0"
+9.565.toExponential(6) -> "9.656000e+0"
+
+toFixed(decimalsNumber)
+1.234.toFixed(0) -> "1"
+1.567.toFixed(0) -> "2"
+1.567.toFixed(1) -> "1.6"
+1.toFixed(3) -> "1.000"
+
+toPrecision(decimalsNumber) , looks like same as above, as string
+
+(1+2).valueOf() -> 3 as number
+(12).valueOf() -> 12 as number
+1.2.valueOf() -> 1.2 as number
+
+Converting Variables to Numbers:
+Number( true | false | " 10" | "10 " | "10" | "1.2" )
+-> 1 0 10 10 10 1.2
+Number( "1 0" | "1,2" | "zorro" ) -> NaN NaN NaN
+Number() -> 0 -> milliseconds from 1970-01-01 y m d
+Number(new Date("1970-01-02")) -> 86400000
+
+parseInt("10")
+parseInt("10.33")
+parseInt("10 6")
+parseInt("10 years")
+all above return 10
+parseInt("years 10") -> NaN
+
+parseFloat("10") -> 10
+parseFloat("10.33") -> 10.33
+parseFloat("10 6") -> 10
+parseFloat("10 years") -> 10
+parseFloat("years 10") -> NaN
+
+Number methods:
+Number.MAX_VALUE
+Number.MIN_VALUE
+Number.POSITIVE_INFINITY
+Number.NEGATIVE_INFINITY
+Number.NaN
+ALL above allowed to use only as Number.methodName
+let x = Number.MAX_VALUE -> 1.7976931348623157e+308
+let y = 6; y.MAX_VALUE -> undefined
+
+
+arrays
+
+- new Array(1,2,"3")
+- [1,2,"3"]
+- []
+
+.length
+
+.sort() - sort arr alphabetically on place
+Defaults items sorted as string, so number sorted incorrect "2" > "100".
+To fix this add compare function as argument, f.e. arr.sort(function(a,b){return a - b};)
+compare function above sorts every loop the pair of items
+by (positive, zero, negative) result of function.
+Positive result sort a before b.
+Sorting an Array in Random Order.
+arr.sort(function(a, b){return 0.5 - Math.random()})
+better syntax fisher yates method 1938 data science:
+for (let i = points.length -1; i > 0; i--) {
+  let j = Math.floor(Math.random() * i)
+  let k = points[i]
+  points[i] = points[j]
+  points[j] = k
+} 
+
+.reverse() - on place
+.push("add new value at the end")
+arr=[]
+arr.push("first"); -> ["first"]
+arr[2]="last"; -> ["first", undefined, "last"]
+
+
+const arr.forEach(myFunction); on place
+function myFunction(value, index, array){console.log(value);}
+
+const arr2=arr1.map(myFunction); return new array
+function myFunction(value, index, array){return value+1;}
+
+const arr3=arr4.filter(myFunction); return new array
+function myFunction(value, index, array){return value>0;}
+
+let sum = arr5.reduce(myFunction); return sum of array from left to right
+let sum = arr5.reduce(myFunction, 25); same with initial value 25
+let sum = arr5.reduceRight(myFunction, 25); same but from right to left
+function myFunction(total, value, index, array) {return total + value;}
+
+let allBig = arr6.every(myFunction); return true if all returns is true
+function myFunction(value, index, array) {return value>10;}
+
+let allMin = arr7.some(myFunction); return true if some returns is true
+function myFunction(value, index, array) {return value>10;}
+
+arr.indexOf("value", ?strart) -> return first matching index from start(0) or -1
+arr.lastIndexOf("value", ?strart) -> return last matching index from start(0) or -1
+
+arr.find(myFunction); return first value matching the function or undefined
+function myFunction(value, index, array) {return value>10;}
+
+arr.findIndex(myFunction); return first index matching the function or -1
+function myFunction(value, index, array) {return value>10;}
+
+arr = Array.from(any iterable or have .length property, f.e. string); return array
+
+let keys = arr.keys(); return iterator with array of indices
+for (let x of keys) {can useing x as index}
+
+let enitries = arr.entries(); return iterator with array of [index,value] pairs
+for (let x of keys) {can useing x as x[0],x[1] pair}
+
+let isTrue = arr.includes("itemValue"); return Boolean, NaN also can be checked as value.
+
+
+WARNING !!
+If you use named indexes, JavaScript will redefine the array to an object.
+arr["nameIndex"] = 0; //DON'T DO THIS
+arr.length = undefined; //it's object now
+
+[2] -> [2]
+new Array(2) -> [undefined, undefined]
+
+check the object is array:
+- Array.isArray(arr)
+- arr.instanceof Array
+
+arr.toString() -> "item,item"
+arr.join(" ") -> "item item"
+
+arr.pop() -> cut and return last item
+arr.push(item) -> add new item at the end + return new arr.length
+arr.shift() -> cut and return first item
+arr.unshift() -> add new item at the first index + return new arr.length
+
+arr[arr.length] = "newItem"
+
+delete arr[0] -> [undefined, item, ...] , use push() and pop() instead
+
+arr5 = arr1.concat(arr2,arr3,"string4") -> returns new array, by concatenate all
+arr1 = arr1.splice(2, 0, "Lemon", "Kiwi") -> insert incoming(optional) items to index 2, and cut 0 items then return cutted
+
+arr1 = arr.slice(includeFromIndex, excludeToIndex) -> return new array
+
+Automatic toString()
+document.getElementById("demo").innerHTML = arr;
+All JavaScript objects have a toString() method
+
+find max of array
+let max = Math.max.apply(null, arr);
+
+or faster using function:
+function myArrayMax(arr) {
+  let len = arr.length;
+  let max = -Infinity;
+  while (len--) {
+    if (arr[len] > max) {
+      max = arr[len];
+    }
+  }
+  return max;
+}
+
+Comparing string properties:
+const cars = [
+  {type:"Volvo", year:2016},
+  {type:"Saab", year:2001},
+  {type:"BMW", year:2010}
+];
+cars.sort(function(a, b){
+  let x = a.type.toLowerCase();
+  let y = b.type.toLowerCase();
+  if (x < y) {return -1;}
+  if (x > y) {return 1;}
+  return 0;
+}); 
+
+
+dates
+const d = new Date();
+x4 ways
+Note: JavaScript counts months from 0(January) to 11:
+Specifying a month > 11, will add the overflow and increase the year:
+new Date(year, month, day, hours, minutes, seconds, milliseconds)
+new Date(milliseconds)
+new Date(date string)
+new Date()
+
+const d = new Date(2018, 11); year and month
+const d = new Date(99, 11, 24); -> 99 two number(or one number) will 19xx years
+const d = new Date("October 13, 2014 11:13:00"); -> new date object from string
+const d = new Date(2018); milliseconds -> Thu Jan 01 1970 03:00:02 ...
+const d = new Date(-100000000000);  -> Oct 1966
+d.toString()
+d.toUTCString()
+d.toDateString() -> more readable
+d.toISOString()
+The ISO 8601 syntax (YYYY-MM-DD) is also the preferred JavaScript date format.
+const d = new Date("2015-03-25");
+const d = new Date("2015-03"); timezone can vary output from Feb 28 to Mar 1.
+const d = new Date("2015");
++time
+const d = new Date("2015-03-25T12:00:00Z"); Z is UTC flag
+Other incoming forms not stable and recommended
+
+let msec = Date.parse("March 21, 2012"); from string to ms, from 1970-1-1
+const d = new Date(msec); convert to date object
+
+new Date() .get ... methods
+getFullYear() -> (yyyy)
+getMonth() -> (0-11)
+getDate() -> (1-31)
+getHours() -> (0-23)
+getMinutes() -> (0-59)
+getSeconds() -> (0-59)
+getMilliseconds() -> (0-999)
+getDay() -> (0-6) 0 - Sunday
+getTime() -> (milliseconds since January 1, 1970)
+Date.now() Get the time. ECMAScript 5.
+Same for set... , except getDay() of week
+Plus minus allowed.
+Overflow will change the date object, f.e. d.setMonth(d.getMonth()+14)
+
+Compare dates is allowed.
+if( futureDay > today ){ console.log("today is before futureday"); }
+
+same for some UTC but return UTC values:
+getUTCFullYear()
+getUTCMonth()
+getUTCDate()
+getUTCHours()
+getUTCMinutes()
+getUTCSeconds()
+getUTCMilliseconds()
+getUTCDay()
+And for setUTC too.
+
+Math
+Math objects is static, haven't consructor.
+Math.PI
+x8 Constants supported
+Math.E        // returns Euler's number
+Math.PI       // returns PI
+Math.SQRT2    // returns the square root of 2
+Math.SQRT1_2  // returns the square root of 1/2
+Math.LN2      // returns the natural logarithm of 2 -> ln2
+Math.LN10     // returns the natural logarithm of 10
+Math.LOG2E    // returns base 2 logarithm of E
+Math.LOG10E   // returns base 10 logarithm of E
+
+Math.methods()
+ to integer
+Math.round(x) -> Returns x rounded to its nearest integer
+Math.ceil(x) -> Returns x rounded up to its nearest integer
+Math.floor(x) -> Returns x rounded down to its nearest integer
+Math.trunc(x) -> Returns the integer part of x (new in ES6)
+
+Math.sign(x) returns if x is negative, null or positive:
+return -1 0 1, checked. with 1/Infinity work too -> 0.
+Sometimes return nothing or NaN, with bad incomings.
+
+Math.pow(x, y) -> x**y
+Math.sqrt(x) -> x**0.5
+Math.abs(x)
+Math.sin(x) -> sin of angle given in radians
+Math.cos(x) -> ... given in radians
+Math.min(0, 150, 30,...)
+Math.max(0, 150, 30,...)
+Math.random() -> from zero [0, 1) less than one.
+
+Math.log(x) returns the natural logarithm of x.
+Math.E and Math.log() are twins.
+
+Math.log2(x) returns the base 2 logarithm of x.
+Math.log2(8); -> 3 -> 2*2*2
+
+Math.log10(x) returns the base 10 logarithm of x.
+Math.log10(1000); -> 3 -> 10*10*10
+
+acos(x) -> Returns the arccosine of x, in radians
+acosh(x) -> Returns the hyperbolic arccosine of x
+asin(x) -> Returns the arcsine of x, in radians
+asinh(x) -> Returns the hyperbolic arcsine of x
+atan(x) -> Returns the arctangent of x as a numeric value between -PI/2 and PI/2 radians
+atan2(y, x) -> Returns the arctangent of the quotient of its arguments
+atanh(x) -> Returns the hyperbolic arctangent of x
+cbrt(x) -> Returns the cubic root of x
+cosh(x) -> Returns the hyperbolic cosine of x
+exp(x) -> Returns the value of Ex
+sinh(x) -> Returns the hyperbolic sine of x
+tan(x) -> Returns the tangent of an angle
+tanh(x) -> Returns the hyperbolic tangent of a number
+
+Math.floor(Math.random() * 10); -> random 0 .. 9
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
+} //both min and max included
+
+Booleans can be only true or false.
+let x = Boolean(10 > 9); -> true
+let y = (10 > 9); -> true
+let z = 10 > 9; -> true
+
+Everything with value is true
+the false is:
+Boolean(0) -> false
+Boolean(-0) -> false
+Boolean("") -> false
+Boolean(undefined) -> false
+Boolean(null) -> false
+Boolean(false) -> false
+Boolean(NaN) -> false
+
+if condition
+short form
+let x = (boolean condition) ? "true result" : "false result";
+
+if (condition){ code1; }
+else if (condition) { code2; }
+else { code3; }
+
+switch statement
+
+switch(expression) {
+  case x:
+    // code executed if expression === x
+    break;
+  case y:
+    // code executed if expression === y
+    break;
+  default:
+    // code block in other case
+    // if default block is not last
+    // it need "break;" command
+} 
+without break can be executed several case's.
+The default case does not have to be the last case in a switch block.
+
+Checked === used,
+switch return default, in case of
+let x = switch(new Boolean(true)) {
+case true: "some text";
+default: "other text";
+}
+Returns default.
+
+Grouping allowed:
+case 4:
+case 5:
+  text = "text for case 4 and 5";
+
+
+for Loop
+
+for - loops through a block of code a number of times
+for/in - loops through the properties of an object
+for/of - loops through the values of an iterable object
+while - loops through a block of code while a specified condition is true
+do/while - also loops through a block of code while a specified condition is true
+
+for (let x = 0; x<10; x++){}
+
+first statement can be multistatement:
+for (let i = 0, len = cars.length, text = ""; i < len; i++){ text+=cars[i]; }
+
+first statement can be outside for
+let i = 2;
+let len = cars.length;
+let text = "";
+for (; i < len; i++){//code}
+
+BAD is to omit statement 2, but it is possible.
+for (; ; i++){//code with some "break;" command}
+and you must "break;" the code inside to prevent
+infinity looping.
+
+Statement 3 too can be omitted:
+...
+for (; i < len; ) {
+  text += cars[i] + "<br>";
+  i++;
+}
+
+for (key in object) {//key is key now}
+
+Do not use for in over an Array if the index order is important.
+for (variable in array) {//variable is array item now }
+
+for (variable of iterable) {//code}
+Variable can be declared with const, let, or var.
+for (let x of "language"){}
+for (let x of ["a","r","r","a","y"]){}
+for (const x of new Set(["a","b","c","a"])) {} -> for set, x will a b c
+for (const x of new Map([ ["mKey1", 11], ["mKey3", 333] ]) ){} -> for map x[0],x[1]
+
+while Loop
+
+while (Boolean condition) {//code}
+
+do {// code}
+while (Boolean condition);
+
+while (cars[i]) {
+  text += cars[i];
+  i++;
+}
+//not raise error, complete ok,
+//even when index out of range
+
+break; -> jumps out of a loop
+continue; -> jump to next iteration
+
+The labels. Label name ends with colon.
+labelName:
+
+Can't jump out of code block.
+
+break labelName;
+continue labelName;
+
+const cars = ["BMW", "Volvo", "Saab", "Ford"];
+list: {
+  text += cars[0]
+  text += cars[1]
+  break list;
+  text += cars[2] //never executed
+}
+
+JavaScript Set. Unique only elements.
+new Set() -> Creates a new Set
+add() -> Adds a new element to the Set
+delete() -> Removes an element from a Set
+has() -> Returns true if a value exists in the Set
+forEach() -> Invokes a callback for each element in the Set
+values() -> Returns an iterator with all the values in a Set
+Property
+size -> Returns the number of elements in a Set
+
+set.forEach(myFunction) -> the myFunction(value){//code} have one parameter
+set.values() -> returns iterator
+BAD. Using new String("a") x3 times, possible create set of "a" "a" "a".
+
+JavaScript Map.
+new Map([ ["mk1", value], ["mk2", value] ]) -> Creates a new Map
+set("key", value) -> Sets the value for a key in a Map or add new pair
+get("key") -> Gets the value for a key in a Map
+delete("key") -> Removes a Map element specified by the key
+has("key") -> Returns true if a key exists in a Map
+forEach() -> Calls a function for each key/value pair in a Map
+entries() -> Returns an iterator with the [key, value] pairs in a Map
+Property
+size -> Returns the number of elements in a Map
+
+JavaScript Objects vs Map
+Objects: key is string or symbols, keys not ordered, not directly iterable, have default keys.
+Maps: iterable, keys are any objects, keys ordered by insertion, have not default keys.
+
+.forEach(myFunction) -> the function myFunction(value, key){} form
+.entries() -> returns iterable of x[0],x[1] pairs.
+
+JavaScript typeof
+There are 5 data types in JavaScript:
+string
+number
+boolean
+object
+function
+
+6 objects types
+Object
+Date
+Array
+String
+Number
+Boolean
+
+2 data types can't have value
+null
+undefined
+
+typeof null -> returns "object" too
+
+Primitive data types is string, number, boolean, undefined.
+Complex data types is function, object(also include array, null).
+
+The .constructor property.
+" ".constructor -> String(){[native code]}
+obj.constructor -> Object(){[native code]}
+arr.constructor -> Array(){[native code]}
+myFunction.constructor -> Function(){[native code]}
+
+to check. F.e. if object is array then condition will true
+arr.constructor.toString().indexOf("Array") > -1;
+arr.constructor === Array; short form
+
+null === undefined -> false, because the null type is object
+null == undefined -> true
+
+Type conversion
+Number("") -> 0
+Number(" ") -> 0
+Number("1 1") -> NaN
+Number("1.2") -> 1.2
+Number(new Date()) -> milliseconds number
+Number(false) -> 0
+Number(true) -> 1
+
+Unary "+" operator.
+let y = "5"; // y is a string
+let x = + y; // x is a number
+let z = "John";   // z is a string
+let b = + z;      // b is a number (NaN)
+
+to string
+String(value)
+String(false) -> "false"
+String(true) -> "true"
+
+Automatic type convertion
+5 + null -> 5
+"5" + null -> "5null"
+"5" + 2 -> "52"
+"5" - 2 -> 3
+"5" * "2" -> 10
+
+Automatic String Conversion
+[1,2,3,4].toString() -> "1,2,3,4"
+{name:"Fjohn"}.toString() -> "[object Object]"
+
+Boolean()
+0, NaN, "", undefined -> false
+
+
+Bitwise operators. integers use same form. Demo is binary.
+& -> AND -> Sets each bit to 1 if both bits are 1 -> 0101 & 0001 -> 0001
+| -> OR -> Sets each bit to 1 if one of two bits is 1 -> 0101 | 0001 -> 0101
+^ -> XOR -> Sets each bit to 1 if only one of two bits is 1 -> 0101 ^ 0001 -> 0100
+~ -> NOT -> Inverts all the bits -> ~1010 -> 0101
+<< -> Zero fill left shift -> 1010<<1 -> 0100
+>> -> Signed right shift -> 1010>>1 -> 0101
+>>> -> Zero fill right shift -> 1010>>>1 -> 0101
+
+JavaScript stores numbers as 64 bits floating point numbers.
+Before a bitwise operation is performed, JavaScript converts numbers to 32 bits signed integers,
+because bitwise operations are performed on 32 bits binary numbers.
+A signed integer uses the leftmost bit as the minus sign.
+
+conversion
+
+decimal to binary
+(dec >>> 0).toString(2)
+
+binary to decimal
+parseInt(bin, 2).toString(10)
+
+
+Regular Expressions. Character sequence to forms a search pattern.
+
+Syntax:
+/pattern/modifiers;
+
+Used often with two string methods
+.search() .replace()
+
+let text = "Visit W3Schools!";
+text.search("W3Schools"); -> 6
+text.search(/w3schools/i); -> 6 and ignore case
+
+let text = "Visit Mini!";
+text.replace("Mini", "W3Schools"); -> "Visit W3Schools"
+text.replace("/mini/i", "W3Schools"); -> "Visit W3Schools"
+
+modifiers
+i -> Perform case-insensitive matching
+g -> Perform a global match (find all matches rather than stopping after the first match)
+m -> Perform multiline matching
+
+patterns
+[abc] -> Find any of the characters between the brackets
+[0-9] -> Find any of the digits between the brackets
+(x|y) -> Find any of the alternatives separated with |
+
+metacharacters
+\d -> Find a digit
+\s -> Find a whitespace character
+\b -> Find a match at the beginning of a word like this: \bWORD, or at the end of a word like this: WORD\b
+\uxxxx -> Find the Unicode character specified by the hexadecimal number xxxx
+
+quantifiers
+n+ -> Matches any string that contains at least one n
+n* -> Matches any string that contains zero or more occurrences of n
+n? -> Matches any string that contains zero or one occurrences of n
+
+Using the RegExp Object.
+.test()
+const pattern = /e/;
+pattern.test("Include!"); -> true , because "e" inside
+or
+/e/.test("include!"); -> true, the short form
+
+let obj = /e/.exec("doe!");
+->
+obj[0] -> "e"
+obj.index -> 2
+obj.input -> "doe!"
+
+
+JavaScript Errors
+
+try{ throw "generated error"; //code, f.e. throw custom error }
+catch(err){ alert(err); // or alert(err.message); for standard error }
+finally{ alert("executied less or more"); }
+
+Create a custom error, using "throw" statement.
+The exception can be a JavaScript String, a Number, a Boolean or an Object
+
+built in Error Object Properties
+.message
+
+.name
+EvalError -> in the eval() function
+RangeError -> out of range -> num.toPrecision(500);
+ReferenceError -> An illegal reference has occurred
+SyntaxError -> wrong code
+TypeError -> type used wrong -> (5).toUpperCase();
+URIError -> fail with encodeURI() -> decodeURI("%%%");
+
+Newer versions of JavaScript do not throw EvalError. Use SyntaxError instead.
+
+Non-Standard Error Object Properties.
+Not use it, not crossplatform(browser).
+fileName (Mozilla)
+lineNumber (Mozilla)
+columnNumber (Mozilla)
+stack (Mozilla)
+description (Microsoft)
+number (Microsoft)
+
+
+JavaScript Scope
+
+-Block scope
+-Function scope
+-Global scope
+
+"var" always outside block scope
+"let" and "const" is block scope keywords
+The "{ //code }" is block of code
+
+Function Scope cover all,
+"let" and "const" and "var".
+function myFunction(){ //function scope }
+
+A variable declared outside a function, becomes GLOBAL.
+let carName = "Volvo";
+function myFunction(){//carName can be used here too}
+
+All scripts and functions on a web page can access Global scope variables.
+
+In JavaScript, objects and functions are also variables.
+
+Assign a value to a variable that has not been declared,
+then it automatically become a GLOBAL variable.
+
+myFunction();
+
+// code here can use carName
+
+function myFunction() {
+  carName = "Volvo";
+}
+
+In "Strict Mode", available in new browsers,
+the undeclared variables are not automatically global.
+
+In HTML, the global scope is the window object.
+Global variables defined with the "var" keyword belong to the window object.
+var carName = "Volvo";
+// code here can use window.carName
+
+Global variables defined with the "let" keyword do not belong to the window object.
+Do NOT create global variables without neccessary.
+
+Variables Lifetime.
+-started when variable declared.
+-ended
+- - In a web browser, global variables are deleted
+when you close the browser window (or tab).
+- - in functions(local, include parameters) when function completed
+
+
+JavaScript Hoisting is default behavior of
+moving declarations to the top of current scope..
+In JavaScript,
+a variable can be declared after it has been used.
+
+x = 5; // Assign 5 to x
+//some code using x
+var x; // Declare x
+
+Variables defined with "let" and "const" are
+hoisted to the top of the block, but not initialized,
+and can't be used before it has been declared,
+or will be raised ReferenceError (let), SyntaxError (const).
+
+Using before initialisation returns undefined
+var x = 5;
+x+y //y here is undefined -> "5undefined"
+var y = 2;//y initialisation
+
+Declare Your Variables At the Top !
+
+JavaScript in strict mode does not allow
+variables to be used if they are not declared.
+The "use strict" directive is only recognized
+at the beginning of a script or a function.
+
+"use strict";
+x = 3.14; -> error, need first declare x, then use.
+
+Function scoping
+x = 3.14; // This OK
+myFunction();
+
+function myFunction() {
+  "use strict"; //strict inside function only
+  y = 3.14;   // This ERROR
+}
+
+Strict mode makes it easier to write "secure" JavaScript.
+In strict mode, any assignment to a non-writable property,
+a getter-only property, a non-existing property, a non-existing variable,
+or a non-existing object, will throw an error.
+
+Limitations.
+Deleting in strict mode not allowed.
+Duplicating a parameter name is not allowed.
+Octal numeric literals are not allowed.
+Octal escape characters are not allowed.
+Writing to a read-only property is not allowed.
+Writing to a get-only property is not allowed.
+Deleting an undeletable property is not allowed.
+The word "eval" cannot be used as a variable.
+The word "arguments" cannot be used as a variable.
+The with statement is not allowed.
+For security reasons, eval() is not allowed to create
+variables in the scope from which it was called.
+
+"use strict";
+let x = 3.14;
+delete x; // This will cause an error
+
+function x(p1, p1) {}; // This will cause an error
+
+let x = 010; // This will cause an error
+
+let x = "\010"; // This will cause an error
+
+const obj = {};
+Object.defineProperty(obj, "x", {value:0, writable:false});
+obj.x = 3.14; // This will cause an error
+
+const obj = {get x() {return 0} };
+obj.x = 3.14; // This will cause an error
+
+delete Object.prototype; // This will cause an error
+
+let eval = 3.14; // This will cause an error
+
+let arguments = 3.14; // This will cause an error
+
+with (Math){x = cos(2)}; // This will cause an error
+
+eval ("let x = 2");
+alert (x); // This will cause an error
+
+The "this" keyword in functions behaves differently in strict mode.
+The "this" keyword refers to the object that called the function.
+If the object is not specified, functions in strict mode will return "undefined" and functions in normal mode will return the global object (window)
+
+"use strict";
+function myFunction() {
+  alert(this); // will alert "undefined"
+}
+myFunction();
+
+Keywords reserved for future JavaScript versions
+can NOT be used as variable names in strict mode.
+
+implements
+interface
+let
+package
+private
+protected
+public
+static
+yield
+
+JavaScript strict mode does not allow default binding.
+
+The "this" keyword.
+In JavaScript, the "this" keyword refers to an object.
+
+In an object method, "this" refers to the object.
+Alone, "this" refers to the global object.
+In a function, "this" refers to the global object.
+In a function, in strict mode, "this" is undefined.
+In an event, "this" refers to the element that received the event.
+Methods like "call()", "apply()", and "bind()" can refer "this" to any object.
+
+.bind() .apply() .call() allows to switch this inside object method to other object as parameter:
+.call() and .apply() are execute the current function immediately, bind() returns a new function.
+
+obj.objectMethod() -> usual call when "this" inside binded to object self
+obj.objectMethod().bind(anotherObj) -> now "this" referenced to anotherObj.
+
+To determine which object this refers to:
+Precedence Object
+1 -> bind()
+2 -> apply() and call()
+3 -> Object method
+4 -> Global scope
+
+
+JavaScript Arrow Function.
+
+let myFunction = (a, b) => a * b; //one statement
+let myFunction = (a, b) => { return a * b;}//many statements
+let hello = val => "Hello " + val; //only for one parameter, no ()
+
+With arrow functions the "this" keyword always
+represents the object that defined the arrow function.
+
+
+JavaScript Classes.
+
+A JavaScript class is not an object,
+but a template for JavaScript objects.
+
+If you do not define a "constructor" method,
+JavaScript will add an empty constructor method.
+
+Syntax.
+class ClassName {
+  constructor() { ... } //add this method, to initialize properties.
+  method_1() { ... }
+  method_2(x) { ... }
+}
+
+class Car {
+  constructor(name, year) {
+    this.name = name;
+    this.year = year;
+  }
+}
+let mc1 = new Car("name", 2000);
+
+JavaScript Modules.
+JavaScript modules allow you to break up your code into separate files.
+JavaScript modules rely on the "import" and "export" statements.
+Modules only work with the HTTP(s) protocol.
+A web-page opened via the file:// protocol cannot use import / export.
+
+Export.
+Two ways manuall export:
+
+-individually
+module.js
+  export const name = "Jax";
+  export const age = 40;
+
+-all at once at the bottom
+module.js
+  const name = "Jax";
+  const age = 40;
+  //...
+  export {name, age};
+
+Default exports:
+You can only have one default export in a file.
+
+message.js
+  const message = () => {
+  const name = "Jax";
+  const age = 40;
+  return name + ' is ' + age + 'years old.';
+  };
+
+  export default message;
+
+
+Import.
+
+You can import modules into a file in two ways,
+based on if they are named exports or default exports.
+
+Named exports are constructed using curly braces.
+Default exports are not.
+
+Two ways:
+
+-Import named exports from the file "person.js":
+import { name, age } from "./person.js";
+
+-Import from default exports:
+import message from "./message.js";
+
+
+JavaScript Debugging.
+console.log("message") -> display in F12-console tab.
+In the debugger window, you can
+set breakpoints in the JavaScript code, and resume
+execution after stop on breakpoint, using "play" button often.
+
+With the debugger turned on, and the "debugger;" in code,
+the execution will stopped, in "debugger" command line.
+
+let x = 15 * 5;
+debugger; //stop place if debugger turned on, else not stop.
+let y = x**2;
+
+JavaScript Code Styling recomendations:
+-do not start names with a $ sign, it can raise lib conflicts
+-variable and function cammelCase names
+-global variables and constants UPPERCASE names
+-space around operators ( = + - * / ), and after commas
+-2 space code indention
+-end a simple statement using semicolon ";"
+-avoid lines longer than 80 characters
+-use lower case file name, it's good for case sensitive servers.
+
+For code in development, readability should be preferred.
+Larger production scripts should be minified.
+
+JavaScript best practices:
+-avoid global variables
+-avoid new , use short forms "", {}, [], /()/.
+-avoid == , use === instead. type and value
+-avoid eval() , can be security hole finally.
+-never break a return statement on two lines etc
+-test objects like using "if (typeof myObj !== "undefined" && myObj !== null)"
+-statements or assignments outside the loop, will make it faster:
+let l = arr.length;
+for (let i = 0; i < l; i++) {//no need call arr.length every loop}
+-reduce DOM Access, it slow. Make it as local(const let) and once.
+-Avoid Unnecessary Variables:
+document.getElementById("demo").innerHTML = firstName + " " + lastName;
+-putting your scripts at the bottom of the page body, first load page.
+-only for external scripts use <script defer="true" to load in background,
+and run after page loaded.
+-if possible, you can add your script to the page by code
+<script>
+window.onload = function() {
+  const element = document.createElement("script");
+  element.src = "myScript.js";
+  document.body.appendChild(element);
+};
+</script>
+-avoid using the "with" keyword.
+
+
+Counter without global variable:
+
+const add = (function () {
+  let counter = 0;
+  return function () {counter += 1; return counter}
+})();
+
+add();
+add();
+add();
+// the counter is now 3
+
+
+ES5
+
+Object.defineProperty()
+allow define property.
+// create
+var person = {
+  firstName: "John",
+  lastName : "Doe",
+  language : "NO",
+};
+
+// Change a Property:
+Object.defineProperty(person, "language", {
+  value: "EN",
+  writable : true,
+  enumerable : true,
+  configurable : true,
+  get : function() { return language },
+  set : function(value) { language = value.toUpperCase()}
+});
+
+//enumerate
+for (var x in person){ console.log(person[x]) }
+
+
+Managing Objects.
+
+// Create object with an existing object as prototype
+Object.create(parent, donor)
+
+// Adding or changing an object property
+Object.defineProperty(object, property, descriptor)
+
+// Adding or changing object properties
+Object.defineProperties(object, descriptors)
+
+// Accessing Properties
+Object.getOwnPropertyDescriptor(object, property)
+
+// Returns all properties as an array
+Object.getOwnPropertyNames(object)
+
+// Accessing the prototype
+Object.getPrototypeOf(object)
+
+// Returns enumerable properties as an array
+Object.keys(object)
+
+
+Protecting Objects
+
+// Prevents adding properties to an object
+Object.preventExtensions(object)
+
+// Returns true if properties can be added to an object
+Object.isExtensible(object)
+
+// Prevents changes of object properties (not values)
+Object.seal(object)
+
+// Returns true if object is sealed
+Object.isSealed(object)
+
+// Prevents any changes to an object
+Object.freeze(object)
+
+// Returns true if object is frozen
+Object.isFrozen(object)
+
+
+ES6
+
+JavaScript Promises.
+"Producing Code" can take some time and
+"Consuming Code" must wait for the result.
+
+const myPromise = new Promise(function(myResolve, myReject) {
+// "Producing Code" (May take some time)
+
+  myResolve(); // when successful
+  myReject();  // when error
+});
+
+// "Consuming Code" (Must wait for a fulfilled Promise).
+myPromise.then(
+  function(value) { /* code if successful */ },
+  function(error) { /* code if some error */ }
+);
+
+The Symbol Type.
+Using Symbol() to create a unique identifiers:
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 50,
+  eyeColor: "blue"
+};
+
+let id = Symbol('id');
+person[id] = 140353;
+// Now person[id] = 140353
+// but person.id is still undefined
+
+Symbols are always unique.
+Symbol("id") == Symbol("id"); -> false
+
+ES6 allows function parameters to have default values.
+function myFunction(x, y = 10){}
+
+The rest parameter (...) allows a function
+to treat an indefinite number of arguments as an array.
+function sum(...args) { for (let arg of args){} }
+let x = sum(4, 9, 16, 25, 29, 100, 66, 77);
+
+
+New Number Properties.
+
+Number.EPSILON
+Number.MIN_SAFE_INTEGER
+Number.MAX_SAFE_INTEGER
+
+New Number Methods.
+
+Number.isInteger(value) -> Boolean
+Number.isSafeInteger(value) -> Boolean
+A safe integer is an integer that can be
+exactly represented as a double precision number.
+Safe integers are all integers
+from -(253 - 1) to +(253 - 1).
+
+New Global Methods.
+IsFinite()
+IsNaN
+
+
+ECMAScript 2016.
+New futures:
+
+JavaScript Exponentiation (**)
+JavaScript Exponentiation assignment (**=)
+JavaScript Array.prototype.includes
+
+let x = 5;
+x**= 2; -> 25
+
+ECMAScript 2017.
+
+JavaScript String padding
+JavaScript Object.entries -> key/value pairs array
+JavaScript Object.values -> values array
+JavaScript async functions
+JavaScript shared memory
+
+const fruits = {Bananas:300, Oranges:200, Apples:500};
+const myMap = new Map(Object.entries(fruits));
+
+async functions.
+async function myDisplay() {
+  let myPromise = new Promise(function(myResolve, myReject) {
+    setTimeout(function() { myResolve("I love You !!"); }, 3000);
+  });
+  document.getElementById("demo").innerHTML = await myPromise;
+}
+myDisplay();
+
+
+ECMAScript 2018.
+
+
+Asynchronous Iteration
+With asynchronous iterables, we can use the
+
+await keyword in for/of loops.
+for await () {} -> iterate without lock the flow.
+
+
+Promise Finally
+ECMAScript 2018 finalizes the full implementation
+of the Promise object with Promise.finally.
+
+let myPromise = new Promise();
+myPromise.then();
+myPromise.catch();
+myPromise.finally();
+
+
+Object Rest Properties
+
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+x; // 1
+y; // 2
+z; // { a: 3, b: 4 }
+
+
+New RegExp Features
+
+Unicode Property Escapes (\p{...})
+Lookbehind Assertions (?<= ) and (?<! )
+Named Capture Groups
+s (dotAll) Flag
+
+
+JavaScript Objects.
+JavaScript objects inherit the properties of their prototype.
+The delete keyword does not delete inherited properties,
+but if you delete a prototype property, it will affect
+all objects inherited from the prototype.
+
+Displaying objects.
+Displaying the Object Properties by name
+Displaying the Object Properties in a Loop
+Displaying the Object using Object.values()
+Displaying the Object using JSON.stringify()
+JSON.stringify(mFun) will not stringify functions,
+functions will be ignored.
+To fix it, convert function.toString(), before.
+obj.method = obj.method.toString()
+
+Getters Setters
+let x = {get value(){return 1;}}
+x.value -> 1 //as get property
+let x = {value:function(){return 1;}}
+x.value() -> 1 //as method call
+
+
+JavaScript Constructors.
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+}
+
+now Person can be used as object constructor.
+const x = Person("name", "sname", 20, "orange");
+
+It is considered good practice to name
+constructor functions with an upper-case first letter.
+
+
+All JavaScript objects inherit
+properties and methods from a prototype.
+
+Date objects inherit from Date.prototype
+Array objects inherit from Array.prototype
+Person objects inherit from Person.prototype
+
+Object.prototype is on the top of the prototype inheritance chain.
+Array objects and other inherited from Objects.prototype.
+
+
+The JavaScript "prototype" property allows you
+to add new properties to object constructors:
+
+Person.prototype.nationality = "English";
+
+
+Iterables can be iterated using "for..of"
+for (x of iterator)
+
+iterable must implement ".next()" method,
+which must return an object with two properties:
+
+value (the next value)
+done (true or false)
+
+// Handmade iterable
+// Create an Object
+myNumbers = {};
+
+// Make it Iterable
+myNumbers[Symbol.iterator] = function() {
+  let n = 0;
+  done = false;
+  return {
+    next() {
+      n += 10;
+      if (n == 100) {done = true}
+      return {value:n, done:done};
+    }
+  };
+}
+
+for (const num of myNumbers){ }
+
+//or manually call iterable
+let iterator = myNumbers[Symbol.iterator]();
+
+while (true) {
+  const result = iterator.next();
+  if (result.done) break;
+  // Any Code Here
+}
+
+
+JavaScript Set.
+.entries() returns [value,value] pairs interator
+instead of [key,value] pairs.
+This makes Sets compatible with Maps.
+
+Being able to use objects as keys is an important Map feature.
+
+
+JavaScript Function.
+
+function mFun(){} - function declaration
+const mFun = function(){}; - function expression
+Functions defined using an expression are not hoisted.
+
+Because of Hoisting, JavaScript functions can be called before they are declared.
+Hoisting applies to variable declarations and to function declarations.
+
+Self-Invoking Functions.
+Auto started if "();" after "( function (){//code} )" syntax.
+( function (){console.log("text");} )();
+
+JavaScript functions have both properties and methods.
+
+The "arguments.length" property returns the number of
+arguments received when the function was invoked.
+
+Object constructor, and object method is a function.
+
+If a function is called with missing arguments (less than declared),
+the missing values are set to undefined.
+The checking, if required value, before ES2015.
+function myFunction(x, y) {
+  if (y === undefined) {
+    y = 2;
+  }
+}
+or default for later ...(x, y=2)...
+
+Function include built-in "arguments" object.
+contains an array of the arguments,
+when function was called.
+
+Arguments are passed by value.
+If a function changes an argument's value,
+it does not change the parameter's original value.
+
+Changes to arguments are
+not visible (reflected) outside the function.
+
+Objects are passed by reference.
+If a function changes an object property,
+it changes the original value.
+
+Invoking a JavaScript Function.
+In JavaScript there is always a default global object.
+The function belongs to this object.
+
+myFunction() and window.myFunction()
+is the same function, when browser "window"
+is a default global object.
+
+To get it "let x = this;" -> [object Window]
+Using the window object as a variable can
+easily crash your program.
+
+
+Difference of binding with additional arguments for object method:
+
+.call(obj, arg1, arg2);
+.apply(obj, [arg1,arg2]);
+
+
+Simulation max for array.
+Math.max().apply(null, arr);
+
+Use ".bind()" to not loose "this" functionality,
+when function used as a callback.
+let display = person.display.bind(person);
+setTimeout(display, 3000);
+
+
+Function Closures.
+Global variables belong to the window object,
+and can be used by all scripts on page.
+
+Variables created without a declaration keyword
+(var, let, or const) are always global,
+even if they are created inside a function.
+
+function mFun(){a=5;} // a is global scope variable
+
+Global variables Lifetime ends when you
+close tab or navigate to another page.
+
+Local variables Lifetime ends, when
+function finished.
+
+In fact, in JavaScript, all functions have
+access to the scope "above" them.
+
+const add = (function () {
+  let counter = 0;
+  return function () {counter += 1; return counter}
+})();
+
+add(); -> 1
+add(); -> 2
+// and no global scope variables used
+A closure is a function having access to the parent scope,
+even after the parent function has closed.
+Explanation:
+https://www.w3schools.com/js/js_function_closures.asp
+
+
+Class declarations are NOT hoisted, so
+declare a class before you can use it.
+JavaScript Class Inheritance.
+"extends" keyword
+
+class A{consructor(aa){}...}
+class B extends A{constructor(aa,bb){ super(aa); } }
+The B have all A methods. The "super(aa)", call A constructor.
+
+Getters and Setters is allowed.
+Even if the getter or setter is a methods,
+you do NOT use parentheses "()" when you
+want to GET or SET the property value.
+//for setter "set property(value) {}"
+classInstanceOrObject.property = value;
+
+The "static" method call is allowed ONLY on an object class,
+NOT on an object.
+
+class Car{ constructor(){}; static hello(){//code} }
+Car.hello(); -> OK
+mc = Car();
+mc.hello(); -> ERROR
+
+To use the "mc" object inside the static method,
+you can send it as a parameter.
+class Car{ constructor(){}; static hello(x){//code} }
+Car.hello(mc);
+
+
+JavaScript Callback.
+When you pass a function as an argument,
+remember NOT to use parenthesis "()".
+
+function mFun(x, someFun){ x+=1; someFun(x); }
+function logFun(y){console.log(y);}
+mFun(25, logFun); // NO "()" at the end of logFun
+
+Callbacks - Asynchronous JavaScript.
+
+setTimeout(mFun, 3000);
+function mFun(){ console.log("test 3sec pause"); }
+
+or
+
+setTimeout( function() { mFun(); }, 3000);
+Complete function is passed to setTimeout() as an argument.
+
+Repeated invoke with pause.
+setInterval(myFunction, 3000); // repeat invoking every 3 sec
+
+Another Promise example.
+function myDisplayer(some) { console.log(some); }
+
+let myPromise = new Promise(function(myResolve, myReject) {
+  let req = new XMLHttpRequest();
+  req.open('GET', "mycar.htm");
+  req.onload = function() {
+    if (req.status == 200) {
+      myResolve(req.response);
+    } else {
+      myReject("File not Found");
+    }
+  };
+  req.send();
+});
+
+myPromise.then(
+  function(value) {myDisplayer(value);},
+  function(error) {myDisplayer(error);}
+);
+
+
+The "async" makes a function return a Promise.
+The "await" makes a function wait for a Promise.
+The "await" keyword can only be used inside an "async" function.
+
+JavaScript Async.
+
+async function myFunction() { return "Hello"; }
+myFunction().then(
+  function(value) {myDisplayer(value);},
+  function(error) {myDisplayer(error);}
+  //error line is optional, if sure no error, can omit
+);
+
+JavaScript Await.
+
+async function getFile() {
+  let myPromise = new Promise(function(resolve) {
+    let req = new XMLHttpRequest();
+    req.open('GET', "mycar.html");
+    req.onload = function() {
+      if (req.status == 200) {
+        resolve(req.response);
+      } else {
+        resolve("File not Found");
+      }
+    };
+    req.send();
+  });
+  let x = await myPromise;
+  alert(x);
+}
+
+getFile();
+
+
+JavaScript HTML DOM.
+Allow:
+- manage HTML elements of page: create/edit/delete
+- manage HTML events of page elements.
+Root element is <html>
+
+<div id="plant"></div>
+document.getElementById("plant").innerHTML = "leaf";
+document.getElementById("plant").style.color = "green";
+<img src="" />
+document.getElementById("plant").src = "plant.png";
+document.getElementById("plant").setAttribute("", "green");
+
+document.getElementsByTagName(name) -> array;
+//html <div class="className"></div>
+document.getElementsByClassName("className"); -> array
+const x = document.querySelectorAll("div.className"); -> array
+
+
+document.createElement(element) -> Create an HTML element
+document.removeChild(element) -> Remove an HTML element
+document.appendChild(element) -> Add an HTML element
+document.replaceChild(new, old) -> Replace an HTML element
+document.write(text) -> Write into the HTML output stream
+
+document.getElementById(id).onclick = function(){code} -> add event handler
+
+
+Finding HTML Objects.
+... some of methods
+document.anchors -> Returns all <a> which "name" attribute
+document.body -> <body>
+document.cookie -> returns cookie
+document.doctype -> f.e. <!DOCTYPE html>
+document.documentElement -> <html>
+document.domain -> document server's domain name
+document.embeds -> all <embed>. similar for .forms .head .images
+document.forms["form1"]; -> <form id="form1">
+document.inputEncoding -> encoding(charset set)
+document.links -> all <area> and <a> with "href"
+document.readyState -> loading status
+document.scripts -> all <script>
+document.title -> <title>
+document.URL -> complete url of document
+
+
+JavaScript and Forms.
+
+function validateForm() {//must return true to submit form}
+let x = document.forms["formName"]["inputName"].value;
+<form
+ name="formName"
+ action="/action_page.php"
+ onsubmit="return validateForm()"
+ method="post">
+ <input name="inputName" /> <!-- default input field -->
+ <input name="inputName" required />
+ <!-- //required -> input need value to submit form-->
+ <input type="submit" value="Submit" /> <!-- submit button -->
+</form>
+
+
+HTML Events.
+
+<button type="button" id="mBut"
+onclick="document.getElementById('id1').style.color = 'green' ">
+Click to green</button>
+
+<h1 onclick="this.innerHTML = 'After click text!'">
+Click on this text!</h1>
+
+<h1 onclick="changeText( this )">Click on this text!</h1>
+
+function mFun(x="default text"){ //code }
+document.getElementById("mBut").onclick = mFun;
+
+onload - triggered when used enters page
+onunload - triggered when used leave page
+onchange - often used with <input onchange="mFun()" />
+onmouseover and onmouseout - for mouse trigger in/out element
+onmousedown, onmouseup, and onclick - for mouse click trigger
+
+
+JavaScript HTML DOM EventListener.
+document.getElementById("mBut").addEventListener("click", mFun);
+
+Syntax:
+element.addEventListener(event, function, useCapture);
+element.addEventListener("click", function(){ mFun("new text"); });
+element.addEventListener("click", mFun }); //no parameters
+
+- event - one of HTML DOM Events
+https://www.w3schools.com/jsref/dom_obj_event.asp
+
+- useCapture - Boolean , optional, use
+event capturing(true) or bubbling(false)
+<div><p></p></div>
+bubbling - p then div event will called
+capturing - div then p event will called
+
+element.removeEventListener() - to remove
+element.removeEventListener("mousemove", myFunction);
+
+To "window" object, or objects which support events,
+XMLHttpRequest object etc.
+window.addEventListener("resize", function(){//code });
+
+Passing Parameters. Example above.
+Use anonymous function cover other function call.
+
+
+Navigating Between Nodes. Elements (Nodes).
+element = document.getElementById("text1");
+In nodes tree
+
+to get NODE VALUE use ".nodeValue"
+.nodeValue for element nodes is null
+.nodeValue for text nodes is the text itself
+.nodeValue for attribute nodes is the attribute value
+
+
+to get NODE use next;
+.parentNode -> get parent node of element
+.childNodes[nodenumber] -> child/s of element
+.firstChild
+.lastChild
+.nextSibling -> get right/after on same level
+.previousSibling -> get left/before on same level
+
+<div id="mDiv"> <p id="mPar">text</p> <div>
+document.getElementById("mPar").innerHTML;
+document.getElementById("mDiv").firstChild.nodeValue;
+document.getElementById("mDiv").childNodes[0].nodeValue;
+All return "text".
+
+
+DOM Root Nodes. Access to full document.
+
+document.body -> The body of the document
+document.documentElement -> The full document
+
+.nodeName - same as HTML tag name "a","br",
+read only and result is UpperCase -> A BR.
+
+.nodeType - type of node as number, read only.
+ELEMENT_NODE -> 1 -> <h1 class="heading">W3Schools</h1>
+ATTRIBUTE_NODE -> 2 ->  class = "heading" only XML DOM
+TEXT_NODE -> 3 -> W3Schools
+COMMENT_NODE -> 8 -> <!-- This is a comment -->
+DOCUMENT_NODE -> 9 -> The HTML document itself (the parent of <html>)
+DOCUMENT_TYPE_NODE -> 10 -> <!Doctype html>
+
+
+To CREATE new Elements/Nodes.
+
+const para = document.createElement("p"); -> tag <p>
+const firstNode = document.createTextNode("text before."); -> text
+const node = document.createTextNode(" This is new."); -> text
+para.appendChild(node); -> <p> This is new</p>, added as last child
+para.insertBefore(firstNode, node); -> <p>text before. This is new.</p>
+
+
+To REMOVE element/node.
+document.getElementById("eid").remove(); -> remove element
+
+if browser not support ".remove()"
+<div id="mDiv"> <p id="mPar">text</p> <div>
+- get parent
+const parent = document.getElementById("mDiv");
+- get child
+const child = parent.childNodes[0];
+- remove child node
+parent.removeChild(child); -> remove node
+or
+const child = document.getElementById("mPar");
+child.parentNode.removeChild(child); -> remove node
+
+To REPLACE element/node.
+child.parentNode.replaceChild(newNodeOrElement, child);
+
+
+Collections, array-like list of HTML DOM elements.
+NOT an ARRAY, no methods .push() .pop .join etc,
+but have iterator for looping, and indices.
+
+Elements collection.
+let mCo = document.getElementsByTagName("a") -> collection
+let mCo = document.getElementsByClassName("mLinks") -> collection
+mCo.length -> number of elements in colection
+
+NODELIST.
+document.querySelectorAll("p"); -> NODELIST. -> all <p>
+
+HTMLCollection items can be accessed by their name, id, or index number.
+
+NodeList items can only be accessed by their index number.
+Only the NodeList object can contain attribute nodes and text nodes.
+
+
+BOM - browser object model. To communicate js <-> browser
+
+All global JavaScript objects, functions, and variables
+automatically become members of the window object.
+
+Global variables are properties of the window object.
+Global functions are methods of the window object.
+
+Document object (of the HTML DOM)
+is a property of the window object.
+window.document.get... same as document.get...
+
+window.innerHeight - px browser window inner height
+window.innerWidth - px browser window inner width
+Sizes above is NOT including toolbars and scrollbars.
+
+window.open() - open a new window
+window.close() - close the current window
+window.moveTo() - move the current window
+window.resizeTo() - resize the current window
+
+SCREEN
+"window.screen" can be used without prefix.
+
+screen.width -> px screen size include interface, OS taskbar etc
+screen.height -> px screen size include interface, OS taskbar etc
+screen.availWidth -> px screen size for html content
+screen.availHeight -> px screen size for html content
+screen.colorDepth -> integer of bits used to display one color. 24/32
+screen.pixelDepth -> integer. The pixel depth of the screen. 24/32
+
+
+window.location.property , can be used without prefix
+location
+.href -> (URL) of the current page
+.hostname -> domain name of the web host
+.pathname -> path and filename of the current page
+.protocol -> web protocol used (http: or https:)
+.assign("https://www.w3schools.com") -> load new page
+
+.port -> number of the internet host port of page
+Most browsers will not display default port numbers
+(80 for http and 443 for https)
+
+
+window.history.property or history
+.back() - same as clicking back in the browser
+.forward() - same as clicking forward in the browser
+.go(-2) -> go back two pages -> loads URL. 0->F5
+.length -> not work, on w3schools + firefox
+
+window.navigator.property or navigator. Info can be fake.
+.cookieEnabled -> true/false from browser settings
+.userAgent -> user-agent header sent by browser
+.platform -> OS
+.language -> browser language
+.onLine -> true/false about browser online
+.javaEnabled() -> true/false
+
+
+JavaScript x3 Popup Boxes.
+alert("first line text \n second line text"); -> ok
+confirm("sometext"); -> cancel ok -> return true/false
+prompt("sometext","defaultText"); -> input cancel ok -> return value
+
+
+JavaScript Cookies. Data, stored in text files, on computer,
+in "username = John Doe" name-value pairs form
+
+Manage cookie manually, using code.
+
+document.cookie = "username=John Doe; path=/";
+By default, the cookie belongs to the current page.
+
+"expires=Thu, 18 Dec 2013 12:00:00 UTC;" -> exp.date
+
+let x = document.cookie; -> read cookie
+
+document.cookie = "value-pair string; path=/"
+document.cookie = "value-pair string; path=/mc/"
+now two cookies was created
+
+function to get cookie:
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+JavaScript Validation API.
+
+Constraint Validation DOM Methods.
+checkValidity() -> true if input contain valid data
+setCustomValidity() -> set message for bad data
+const inpObj = document.getElementById("id1");
+if (!inpObj.checkValidity()) {}
+
+Constraint Validation DOM Properties.
+
+validity -> true/false, depend of validity type
+.customError -> true when used custom bad data message.
+.patternMismatch -> true when value does not match pattern.
+.rangeOverflow -> true when value > max attribute.
+.rangeUnderflow -> true when value value < min attribute.
+.stepMismatch -> true when value is break the step attribute.
+.tooLong -> true when value exceeds its maxLength attribute.
+.typeMismatch -> true when value is != type attribute.
+.valueMissing -> true when have "required" attribute + no value.
+.valid -> true when an element's value is valid.
+
+if (document.getElementById("id1").validity.rangeOverflow){//code}
+
+validationMessage -> false validity message
+willValidate -> true if input will be validated.
+
+
+Web Storage API.
+
+sessionStorage - only for this session.
+localStorage - no expiration data.
+
+localStorage.setItem("name", "John Doe");
+localStorage.getItem("name");
+...have more methods
+
+
+Web Workers API.
+Background scripts, with no slowdown page.
+Check workers is supported
+if (typeof(Worker) !== "undefined") {//ok}
+
+Worker is separated file with js code "demo_wo.js" .
+let i = 0;
+function timedCount() {
+  i ++;
+  postMessage(i);
+  setTimeout("timedCount()",500);
+}
+timedCount();
+
+Check the worker already exist
+if (typeof(w) == "undefined") {
+  w = new Worker("demo_workers.js");
+}
+
+Add an "onmessage" event listener to web worker.
+w.onmessage = function(event){
+  document.getElementById("result").innerHTML = event.data;
+}; //will executed when worker sent message
+
+Terminate a Web Worker.
+function stopWorker(){
+  w.terminate();
+  w = undefined; -> after this, (optional) code can be reused
+}
+
+Reuse the Web Worker.
+
+
+Since web workers are in external files,
+they do not have access to the following JavaScript objects:
+"window" "document" "parent"
+
+
+Fetch API. Based on async and await.
+fetch(file)
+.then(x => x.text()) // wait until text recieved
+.then(y => mFun(y)); // make stuff
+
+Code above is same as:
+async function getText(file) {
+  let x = await fetch(file);
+  let y = await x.text();
+  mFun(y);
+}
+
+
+Web Geolocation API.
+
+Locate user position is require user confirmation.
+Second parameter is error handler function.
+Also ".coords.speed", "coords.altitude", "coords.accuracy" a.o.
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(showPos, showErr);
+} else {
+  x.innerHTML = "Geolocation allowed in browser.";
+}
+
+function showPos(pos){
+  alert(pos.coords.latitude +" "+ pos.coords.longitude);
+}
+
+function showErr(error) {
+  switch(error.code) {
+    case error.PERMISSION_DENIED: alert("PD"); break;
+    case error.POSITION_UNAVAILABLE: alert("U"); break;
+    case error.TIMEOUT: alert("T"); break;
+    case error.UNKNOWN_ERROR: alert("UNE"); break;
+  }
+}
+
+Displaying the Result in a Map. Need google map API KEY.
+
+function showPosition(pos) {
+  let latlon = pos.coords.latitude + "," + pos.coords.longitude;
+
+  let img_url = "https://maps.googleapis.com/maps/api/staticmap?center=
+  "+latlon+"&zoom=14&size=400x300&sensor=false&key=YOUR_KEY";
+
+  document.getElementById("mapDiv").innerHTML = "<img src='"+img_url+"'>";
+}
+
+For dinamic position with auto updates.
+lat id = navigator.geolocation.watchPosition(showPosition);
+to stop code auto update method.
+navigator.geolocation.clearWatch(id);
+
+
+JavaScript AJAX - Asynchronous JavaScript And XML.
+
+Allow interact with server, with partically reload page content,
+using XMLHttpRequest. XML, JSON, text data can be used.
+
+function loadDoc() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    document.getElementById("demo").innerHTML = this.responseText;
+    }
+  xhttp.open("GET", "ajax_info.txt", true);
+  xhttp.send();
+}
+For security reasons, modern browsers
+do NOT allow access across domains -> All files on one server.
+The Fetch API make same, with shorter syntax.
+
+new XMLHttpRequest() -> new XMLHttpRequest object
+XMLHttpRequest methods
+.abort() -> cancels request
+.getAllResponseHeaders()
+.getResponseHeader("Last-Modified") -> use "header name"
+.open(method, url, async, user, psw) -> set request
+  -method -> "GET" or "POST"
+  -url -> the file location "/img/super.png" -> "/" server www root
+  -async -> true/false(synchronous)
+  -user -> optional set user name
+  -psw -> optional set password
+.send() -> make request to server for GET requests
+for HTML forms case use POST method
+.send(string) -> make request to server for POST requests
+.setRequestHeader() -> Adds a label/value pair to the header to be sent
+
+xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhttp.send("fname=Henry&lname=Ford");
+
+function loadDoc(url, cFunction) {
+  const xhttp = new XMLHttpRequest();
+  console.log(xhttp.readyState); // 0
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText); //or change HTML
+    }
+  };
+  xhttp.onload = function() {cFunction(this);}
+  xhttp.open("GET", url);
+  xhttp.send();
+}
+function mFun1(xhttp) {
+  console.log(xhttp.readyState); // 4
+}
+loadDoc(url, mFun1); //solution for few mFun1, mFun2 etc
+
+
+XMLHttpRequest properties:
+
+.onload = -> set function called when request is recieved (loaded)
+.onreadystatechange = -> set a function called when ".readyState" changes
+.readyState -> Holds status of XMLHttpRequest.
+  0: request not initialized
+  1: server connection established
+  2: request received
+  3: processing request
+  4: request finished and response is ready
+.responseText -> returns string form of server response
+.responseXML -> returns XML form of server response
+.status -> returns request status-number
+  200: "OK"
+  403: "Forbidden"
+  404: "Not Found" ... and some other
+  For a complete list go to the Http Messages Reference
+.statusText -> returns the status-text (e.g. "OK" or "Not Found")
+
+
+JavaScript HTML DOM Animation, as element style changes.
+
+All animations should be relative to a container element.
+The container element should be created with style = "position: relative".
+The animation element should be created with style = "position: absolute".
+
+HTML.
+<button onclick="aniMove()">Click to animate</button>
+<div id ="container">
+  <div id ="animate">My animation will go here</div>
+</div>
+
+CSS.
+#container { width: 400px; height: 400px; background: yellow;
+  position: relative;
+}
+#animate { width: 50px; height: 50px; background: red;
+  position: absolute;
+}
+
+JavaScript.
+function aniMove() {
+  let id = null;
+  const elem = document.getElementById("animate");
+  let pos = 0;
+  clearInterval(id);
+  id = setInterval(frame, 5);
+  function frame() {
+    if (pos == 350) { //check to complete
+      clearInterval(id);
+    } else { //animate absolute position inside relaitve
+      pos++;
+      elem.style.top = pos + 'px';
+      elem.style.left = pos + 'px';
+    }
+  }
+}
+
+Additional Examples:
+
+foo = [1, 2, 3]
+const [n,y] = foo;
+alert(y); -> 2
+
+
+document.querySelectorAll() -> all matched
+document.querySelector() -> first match
+
+
+IIFE (Immediately Invoked Function Expression)
+https://developer.mozilla.org/en-US/docs/Glossary/IIFE
+(function () { /* ... */ })();
+(function() { console.log('lorem ipsum'); })();

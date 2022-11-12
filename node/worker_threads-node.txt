@@ -1,0 +1,186 @@
+
+The "worker_threads" - enables the use of threads
+that execute JavaScript in parallel.
+
+const worker = require('worker_threads');
+
+Workers (threads) are useful for performing
+CPU-intensive JavaScript operations.
+They do not help much with I/O-intensive work.
+The Node.js built-in asynchronous I/O operations
+are more efficient than Workers can be.
+
+Unlike child_process or cluster, worker_threads
+can share memory. They do so by transferring
+ArrayBuffer instances or sharing SharedArrayBuffer instances.
+
+The stdio output originating from a Worker can blocking the Node.js event loop.
+https://nodejs.org/api/worker_threads.html#synchronous-blocking-of-stdio
+
+If the preload script unconditionally launches
+a worker thread, every thread spawned will spawn
+another until the application crashes.
+https://nodejs.org/api/worker_threads.html#launching-worker-threads-from-preload-scripts
+
+
+Some of methods:
+
+.isMainThread -> <boolean>
+const { Worker, isMainThread } = require('worker_threads');
+Example:
+if (isMainThread) {
+  // re-loads current file inside a Worker instance.
+  new Worker(__filename);
+} else {
+  console.log('Inside Worker!');
+  console.log(isMainThread);  // Prints 'false'.
+}
+
+.markAsUntransferable(object) - if object occurs in the
+transfer list of a "port.postMessage()" call, it is ignored.
+
+.moveMessagePortToContext(port, contextifiedSandbox)
+- port <MessagePort>
+- contextifiedSandbox <Object> of "vm.createContext()".
+-> <MessagePort>
+
+.parentPort -> <null> | <MessagePort>
+If this thread is a Worker, this is a MessagePort
+allowing communication with the parent thread.
+Messages sent using parentPort.postMessage()
+are available in the parent thread
+using worker.on('message'), and messages
+sent from the parent thread using worker.postMessage()
+are available in this thread using parentPort.on('message').
+
+Example:
+const { Worker, isMainThread, parentPort } = require('worker_threads');
+
+if (isMainThread) {
+  const worker = new Worker(__filename);
+  worker.once('message', (message) => {
+    console.log(message);  // Prints 'Hello, world!'.
+  });
+  worker.postMessage('Hello, world!');
+} else {
+  // When a message from the parent thread is
+  // received, send it back:
+  parentPort.once('message', (message) => {
+    parentPort.postMessage(message);
+  });
+}
+
+.receiveMessageOnPort(port) -> <Object> | <undefined>
+- port <MessagePort> | <BroadcastChannel>
+Receive a single message from a given MessagePort.
+If no message is available, undefined is returned,
+otherwise the <Object> with ".message" property.
+
+.threadId -> <integer> - unique
+
+.workerData - arbitrary JavaScript value that contains
+a clone of the data passed
+to this thread’s Worker constructor.
+
+Example:
+const { Worker, isMainThread, workerData } = require('worker_threads');
+
+if (isMainThread) {
+  const worker = new Worker(__filename, { workerData: 'Hello, world!' });
+} else {
+  console.log(workerData);  // Prints 'Hello, world!'.
+}
+
+Class: MessageChannel - represent an asynchronous,
+two-way communications channel. No methods.
+
+Class: MessagePort. Extends: <EventTarget>
+Instances of the worker.MessagePort class represent
+one end of an asynchronous,
+two-way communications channel.
+
+Events: 'close' 'message' 'messageerror'
+
+Methods: .close() .postMessage(value[, transferList])
+- value <any>, - transferList<Object[]>
+https://nodejs.org/api/worker_threads.html#portpostmessagevalue-transferlist
+
+Considerations when transferring TypedArrays and Buffers.
+All TypedArray and Buffer instances
+are views over an underlying ArrayBuffer.
+https://nodejs.org/api/worker_threads.html#considerations-when-transferring-typedarrays-and-buffers
+
+Considerations when cloning objects
+with prototypes, classes, and accessors.
+Non-enumerable properties, property accessors,
+and object prototypes are not preserved.
+Means instances of JavaScript classes
+will be cloned as plain JavaScript objects.
+https://nodejs.org/api/worker_threads.html#considerations-when-cloning-objects-with-prototypes-classes-and-accessors
+
+.start() - starts receiving messages on this MessagePort
+.unref() - allows the thread to exit if this is the only
+active handle in the event system.
+.ref() - does not let the program exit if it's the only
+active handle left (the default behavior), on previously
+".unref()"ed port.
+
+
+Class: Worker. Extends: <EventEmitter>
+
+The Worker class represents an independent
+JavaScript execution thread.
+Most Node.js APIs are available inside of it.
+
+new Worker(filename[, options])
+https://nodejs.org/api/worker_threads.html#new-workerfilename-options
+
+Events: 'error' 'exit' 'message' 'messageerror' 'online'
+
+Some of methods:
+
+.postMessage(value[, transferList<Object[]>]) - received via
+require('worker_threads').parentPort.on('message')
+
+.resourceLimits -> <Object>
+- .maxYoungGenerationSizeMb <number>
+- .maxOldGenerationSizeMb <number>
+- .codeRangeSizeMb <number>
+- .stackSizeMb <number>
+Pass it to constructor to set values for worker.
+If the worker has stopped,
+the return value is an empty object.
+Provides the constraints for worker JS engine thread.
+
+
+.ref() - on ".unref"ed does not let the program exit
+.unref() - allows thread to exit
+.threadId<integer> - unique
+
+.terminate() -> <Promise> -> 'exit' event when emitted.
+stop JavaScript execution in the worker thread
+as possible soon.
+
+.stderr .stdout .stdin -> x2<stream.Readable><..Writable>
+
+
+
+Experimental.
+Class: BroadcastChannel extends EventTarget
+
+Instances of BroadcastChannel allow
+asynchronous one-to-many communication
+with all other BroadcastChannel instances
+bound to the same channel name.
+
+
+Experimental.
+Using AsyncResource for a Worker thread pool
+to properly provide async tracking for a Worker pool.
+Other resource pools, such as
+database connection pools, can follow a similar model.
+https://nodejs.org/api/async_context.html#using-asyncresource-for-a-worker-thread-pool
+
+Experimental.
+Integrating AsyncResource with EventEmitter
+https://nodejs.org/api/async_context.html#integrating-asyncresource-with-eventemitter

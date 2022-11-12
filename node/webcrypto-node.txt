@@ -1,0 +1,47 @@
+https://nodejs.org/api/webcrypto.html
+.webcrypto - implementation of the Web Crypto API standard.
+EXPERIMENTAL.
+
+Class SubtleCrypto.
+const { subtle } = require('crypto').webcrypto;
+The <SubtleCrypto> class can be used
+to generate symmetric (secret) keys
+or asymmetric key pairs (public key and private key).
+Asynchronous async await examples in docs.
+
+Class Crypto.
+Calling require('crypto').webcrypto returns an instance of the
+Crypto class. Crypto is a singleton that provides access
+to the remainder of the crypto API.
+
+crypto.subtle -> <SubtleCrypto>
+Provides access to the SubtleCrypto API.
+Class: SubtleCrypto
+.encrypt(algorithm, key, data)
+.decrypt(algorithm, key, data)
+.exportKey(format, key)
+.generateKey(algorithm, extractable, keyUsages)
+
+
+.getRandomValues(typedArray) -> <Buffer> | <TypedArray>
+- typedArray <Buffer> | <TypedArray>
+Generates cryptographically strong random values.
+The given typedArray is filled with random values,
+and a reference to typedArray is returned.
+The given typedArray must be an integer-based instance of <TypedArray>,
+i.e. Float32Array and Float64Array are NOT ACCEPTED.
+An error will be thrown if the given typedArray is larger than 65,536 bytes.
+
+.randomUUID() -> <string> random RFC 4122 version 4 UUID
+
+
+Class: CryptoKey
+.algorithm - readonly algorithm for which the key
+can be used along with additional algorithm-specific parameters.
+.extractable <boolean> true if key can be extracted using either
+subtleCrypto.exportKey() or subtleCrypto.wrapKey().
+
+Class: CryptoKeyPair
+.privateKey
+.publicKey
+

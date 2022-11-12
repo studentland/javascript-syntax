@@ -1,0 +1,36 @@
+
+The "libuv" is a C library originally written for Node.js
+to abstract non-blocking I/O operations.
+
+https://docs.libuv.org/en/v1.x/api.html
+
+Also has mechanisms to handle services like
+File System, DNS, network, child processes, pipes,
+signal handling, polling, and streaming.
+To perform blocking operations that
+can’t be done asynchronously at OS level,
+libuv also includes a thread pool to distribute CPU loads.
+
+Libuv uses 4 threads by default, but can be changed
+process.env.UV_THREADPOOL_SIZE = 5;
+
+Features of libuv:
+- Full-featured event loop backed by
+epoll (Linux), kqueue (OSX), IOCP (Windows), event ports (SunOS).
+- Asynchronous TCP (net module) and UDP (dgram module)
+- Asynchronous DNS resolution (used partly for the dns module)
+- Asynchronous file, file system operations & events (fs module)
+- ANSI escape code controlled TTY
+- Thread pool and Signal handling
+- Child processes
+- High-resolution clock
+- Threading and synchronization primitives.
+- Inter-Process Communication using
+sockets and Unix domain sockets (Windows)
+
+Benefits:
+- Disk operations are performed asynchronously.
+- High level operations can be broken down to
+simpler disk operations which facilitate rectifying the information.
+- Disk thread can use vector operations like
+readv & writev allowing more buffers to be passed.

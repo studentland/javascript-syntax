@@ -1,0 +1,349 @@
+The "fs" - interacting with the file system.
+
+const fs = require('fs/promises'); //promise-based APIs
+or
+const fs = require('fs'); //callback and sync APIs
+
+Example PROMISE:
+const { unlink } = require('fs/promises');
+(async function(path) {
+  try {
+    await unlink(path);
+    console.log(`successfully deleted ${path}`);
+  } catch (error) {
+    console.error('there was an error:', error.message);
+  }
+})('/tmp/hello');
+
+Example CALLBACK:
+const { unlink } = require('fs');
+unlink('/tmp/hello', (err) => {
+  if (err) throw err;
+  console.log('successfully deleted /tmp/hello');
+});
+
+Example SYNCHRONOUS:
+const { unlinkSync } = require('fs');
+try {
+  unlinkSync('/tmp/hello');
+  console.log('successfully deleted /tmp/hello');
+} catch (err) {
+  // handle the error
+}
+
+Synchronous API. https://nodejs.org/api/fs.html#synchronous-api
+Perform all operations synchronously, blocking flow up to done/<Error>.
+Lot of methods with suffix ...Sync() duplicate other methods.
+Example:
+.accessSync(path[, mode]) - check user permissions
+.access(path[, mode]) -> <Promise> -> undefined
+
+CALLBACK API. https://nodejs.org/api/fs.html#callback-api
+Generally allows using callback as last parameter of
+lot of functions, as replacement of <Promise> or other <Object>
+(often NOT return <Promise> or any <Object>).
+Lot of methods commonly have "callback versions",
+some of them skipped in this notes.
+
+Because they are executed asynchronously
+by the underlying thread pool, there is no guaranteed ordering
+when using either the CALLBACK or PROMISE-based methods.
+
+The following is prone to error because
+the fs.stat() operation might complete before
+the fs.rename() operation:
+
+fs.rename('/tmp/hello', '/tmp/world', (err) => {
+  if (err) throw err;
+  console.log('renamed complete');
+});
+fs.stat('/tmp/world', (err, stats) => {
+  if (err) throw err;
+  console.log(`stats: ${JSON.stringify(stats)}`);
+});
+
+It is important to correctly order the operations
+by awaiting the results of one before invoking the other:
+
+const { rename, stat } = require('fs/promises');
+
+(async function(from, to) {
+  try {
+    await rename(from, to);
+    const stats = await stat(to);
+    console.log(`stats: ${JSON.stringify(stats)}`);
+  } catch (error) {
+    console.error('there was an error:', error.message);
+  }
+})('/tmp/hello', '/tmp/world');
+
+Or, when using the callback APIs, move the fs.stat() call
+into the callback of the fs.rename() operation:
+
+const { rename, stat } = require('fs/promises');
+
+rename('/tmp/hello', '/tmp/world', (err) => {
+  if (err) throw err;
+  stat('/tmp/world', (err, stats) => {
+    if (err) throw err;
+    console.log(`stats: ${JSON.stringify(stats)}`);
+  });
+});
+
+The "process.cwd()" used as relative paths 'file.txt' base point.
+URLs of files are always absolute paths 'file:///tmp/hello'.
+
+In OS each open file is assigned a simple numeric identifier
+called a file descriptor. OS limits the max number of opened
+descriptors in same time. To prevent memory leaks/errors,
+always close the descriptor when operations are completed.
+fs.close()
+
+
+PROMISES API. "fs/promises" - asynchronous
+file system methods that return promises.
+
+Class: FileHandle
+All <FileHandle> objects are <EventEmitter>s.
+if filehandle.close() not used, it will try to
+automatically close the file descriptor and
+emit a process warning, helping to prevent memory leaks.
+Recommended use ".close()" as possible.
+
+If the FileHandle points to a character device
+that only supports blocking reads
+(such as keyboard or sound card),
+read operations do not finish until data is available.
+
+Events:
+'close'
+
+Methods:
+.close(fd[, (err)=>{ }])
+.close() -> <Primise> -> undefined
+.appendFile(data[, options]) alias of ".writeFile()"
+
+.fchmod(fd, mode, (err)=>{ })
+.chmod(mode<integer>) -> <Promise> -> undefined upon success.
+Manage permissions on file.
+
+.fchown(fd, uid, gid, (err)=>{ })
+.chown(uid<integer>, gid<integer>) -> <Primise> -> undefinded.
+Changes the ownership.
+
+.createReadStream(path[, options]) -> <fs.ReadStream>
+.createReadStream([options]) -> <fs.ReadStream>
+- options <Object>
+- - .encoding <string> Default: null
+- - .autoClose <boolean> Default: true, if false, then
+the file descriptor won't be closed, even if there's an error.
+- - .emitClose <boolean> Default: true,
+to emit 'close' after stream has been destroyed.
+- - .start <integer>
+- - .end <integer> Default: Infinity
+- - .highWaterMark <integer> Default: 64 * 1024
+
+.createWriteStream(path[, options]) -> <fs.WriteStream>
+.createWriteStream([options]) -> <fs.WriteStream>
+- options <Object>
+- - .encoding <string> Default: 'utf8'
+- - .autoClose <boolean> Default: true
+- - .emitClose <boolean> Default: true
+- - .start <integer> writing data at some position
+past the beginning of the file.
+Positive < Number.MAX_SAFE_INTEGER
+
+.fdatasync(fd, (err)=>{ })
+.datasync() -> <Promise> -> undefined
+Forces all currently queued I/O operations
+associated with the file to the operating system's
+synchronized I/O completion state.
+
+.fd <number> file descriptor numeric managed by the <FileHandle>
+
+.read(buffer, offset, length, position) - <Promise>:
+.bytesRead<integer> .buffer<Buffer>
+- buffer - to store data from file
+- offset<integer> bytes - for buffer from begin
+- length<integer> bytes - for file read
+- position<integer> bytes - for file read start from begin
+
+.read([options]) - as above, but incoming options <Object> used
+.read(fd, [options,] callback) - callback as bottom
+.read(fd, buffer, offset, length, position,
+(<Error>, bytesRead<integer>, <Buffer>)=>{ }
+) - similar, but with callback
+
+.readFile(options) -> <Promise>
+options <Object> | <string>
+- encoding <string> | <null> Default: null
+- signal <AbortSignal> - allows aborting an in-progress readFile
+Asynchronously reads the entire contents of a file.
+If no encoding is specified (using options.encoding), the data is returned as a <Buffer> object. Otherwise, the data will be a string.
+
+.readv(buffers[, position]) -> <Promise>
+Read from a file and write to an array of <ArrayBufferView>s.
+
+.fstat(fd[, options], (<Error>, <fs.Stats>)=>{ })
+.stat([options]) -> <Promise> -> <fs.Stats> for the file.
+- options <Object>
+- - .bigint <boolean> Whether the numeric values in the
+returned <fs.Stats> object should be bigint. Default: false.
+
+.fsync(fd, (<Error>)=>{ })
+.sync() -> <Promise> -> undefined
+Request to flush data to the storage device.
+
+.ftruncate(fd[, len], (<Error>)=>{ })
+.truncate(len<integer>) -> <Promise> -> undefined
+If the file previously was shorter than len bytes, it is extended,
+and the extended part is filled with null bytes ('\0').
+
+.futimes(fd, atime, mtime, (<Error>)=>{ })
+.utimes(atime, mtime) -> <Promise>
+- atime <number> | <string> | <Date>
+- mtime <number> | <string> | <Date>
+Change the file system timestamps.
+
+.write(buffer[, offset[, length[, position]]]) -> as read
+- offset - for buffer start position
+- length - for buffer read. bytes Default: buffer.byteLength
+- position - for file. from file beginning
+-> <Promise> .bytesWritten <integer>, .buffer <Buffer>
+Write buffer to file.
+
+.write(string[, position[, encoding]]) -> as above
+- string <string> | <Object>(with own .toString function)
+
+It is unsafe to use filehandle.write() multiple times
+on the same file without waiting for the promise to be
+resolved (or rejected). For this scenario, use fs.createWriteStream().
+
+On Linux, positional writes do not work when the file is opened
+in append mode. The kernel ignores the position argument
+and always appends the data to the end of the file.
+
+.writeFile(data, options) -> <Promise>
+- data <string> | <Buffer> | <TypedArray> | <DataView> |
+<Object> | <AsyncIterable> | <Iterable> | <Stream>
+- options <Object> | <string>
+- - .encoding <string> | <null>. Default: 'utf8'
+Asynchronously writes data to a file.
+
+.writev(buffers[, position]) -> <Promise>
+- buffers <Buffer[]> | <TypedArray[]> | <DataView[]>
+- position <integer> The offset from the beginning of the file
+where the data from buffers should be written. If position
+is not a number, the data will be written at the current position.
+-> .bytesWritten <integer>, .buffers <Buffer[]> | <TypedArray[]> |
+<DataView[]>
+Write an array of <ArrayBufferView>s to the file.
+
+.appendFile(path, data[, options]) -> <Promise>
+- path <string> | <Buffer> | <URL> |
+<FileHandle> filename or <FileHandle>
+Asynchronously append data to a file,
+creating the file if it does not yet exist.
+"data" can be a <string> or a <Buffer>.
+
+.appendFile(path, data[, options], callback) - cb(err)=>{ }
+options <Object> | <string>
+- encoding <string> | <null> Default: 'utf8'
+- mode <integer> Default: 0o666
+- flag <string> See support of file system flags. Default: 'a'.
+
+
+.chmod(path, mode, (err)=>{ }) https://nodejs.org/api/fs.html#file-modes
+.chmod(path, mode) -> <Promise> -> undefined
+.chown(path, uid, gid, (err)=>{ })
+.chown(path, uid, gid) -> <Promise> -> undefined
+.lchmod(path, mode, (<Error> | <AggregateError>)=>{ })
+.lchown(path, uid, gid, (<Error>)=>{ })
+.lchown(path, uid, gid) -> set ownership on symbolic link
+.lutimes(path, atime, mtime, (<Error>)=>{ })
+.lutimes(path, atime, mtime) -> symbolic link modification time
+.link(existingPath, newPath, (<Error>)=>{ })
+.link(existingPath, newPath) -> create link from to
+.lstat(path[, options], (<Error> | <fs.Stats>)=>{ })
+.lstat(path[, options]) -> info about symbolic link
+.copyFile(src, dest[, mode]) -> <Promise> -> undefined
+.copyFile(src, dest[, mode], (err)=>{ })
+
+.mkdir(path[, options], (err)=>{ })
+.mkdir(path[, options]) - Asynchronously creates a directory.
+.mkdtemp(prefix[, options], (<Error>, directory<string>)=>{ })
+.mkdtemp(prefix[, options]) - Creates a unique temporary directory.
+.open(path[, flags[, mode]], (<Error>, fd<integer>)=>{ })
+.open(path, flags[, mode]) - opens a <FileHandle>
+.opendir(path[, options], (<Error>, <fs.Dir>)=>{ })
+.opendir(path[, options]) -> <Promise> -> <fs.Dir>.
+.readdir(path[, options]) - Reads folder contents except "." and ".." .
+.readFile(path[, options]) , .readlink(path[, options])
+.realpath(path[, options]) - "fs.realpath.native()" used
+.rename(oldPath, newPath) -> <Promise> -> undefined
+.stat(path[, options])
+
+.rmdir(path[, options])
+- options <Object>
+- - maxRetries <integer> If an EBUSY, EMFILE, ENFILE,
+ENOTEMPTY, or EPERM error is encountered, Default: 0.
+- - retryDelay <integer> The amount of time in milliseconds
+to wait between retries. Default: 100.
+
+.rm(path[, options]) -> <Promise>. Removes files and directories
+options <Object>
+- - force <boolean> When true, exceptions will be ignored
+if path does not exist. Default: false.
+- - maxRetries <integer> Default: 0.
+- - recursive <boolean> If true, perform a recursive directory
+removal. In recursive mode operations are retried on failure.
+Default: false.
+- - retryDelay <integer> The amount of time in milliseconds
+to wait between retries. This option is ignored if the recursive
+option is not true. Default: 100.
+
+.watch(filename[, options][, (et, fn)=>{ }]) -> <fs.FSWatcher>
+- et - eventType <string>
+- fn - filename <string> | <Buffer>
+.watch(filename[, options]) - Returns an async iterator
+that watches for changes on filename
+The fs.watch API is not 100% consistent across platforms.
+
+.writeFile(file, data[, options]) - Asynchronously writes data to a file
+
+check user permissions for file or directory
+.access(path[, mode]) -> <Promise> -> undefined
+.access(path[, mode], callback) - cb(err)=>{ }
+
+.cp(src, dest[, options]) -> copy full derictory structure. Experimental
+.cp(src, dest[, options], callback) Experimental
+
+.readableWebStream() -> <ReadableStream>. Experimental
+An error will be thrown if this method is called more
+than once or is called after the FileHandle is closed or closing.
+
+
+
+https://nodejs.org/api/fs.html#common-objects
+COMMON OBJECTS. Shared by all of the file system API
+variants (promise, callback, and synchronous).
+Lot of them have specific functionality(methods, properties, events).
+
+Class: fs.Dir - representing a directory stream, created by
+fs.opendir(), fs.opendirSync(), or fsPromises.opendir().
+
+Class: fs.Dirent - directory entry, which can be a file or
+a subdirectory within the directory, as returned by reading
+from an <fs.Dir>.
+
+Class: fs.FSWatcher -  emit a 'change' event whenever
+a specific watched file is modified.
+
+Class: fs.StatWatcher - result of call to fs.watchFile()
+
+Class: fs.ReadStream - result of call fs.createReadStream()
+
+Class: fs.Stats - information about a file.
+
+Class: fs.WriteStream - result of call fs.createWriteStream()
+

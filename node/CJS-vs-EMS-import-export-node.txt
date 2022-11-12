@@ -1,0 +1,63 @@
+
+https://irian.to/blogs/what-are-cjs-amd-umd-and-esm-in-javascript/
+https://developers.google.com/web/fundamentals/performance/optimizing-javascript/tree-shaking/#what_is_tree_shaking
+https://www.voidcanvas.com/import-vs-require/
+IMPORTS EXPORTS CJS (back-end) and ESM (front-end).
+
+
+CJS is short for "CommonJS". Node.js uses CJS module format.
+
+- CJS imports module SYNCHRONOUSLY.
+- CJS imports, will give you a copy of the imported object.
+- CJS will NOT WORK IN THE BROWSER.
+It will have to be transpiled and bundled.
+- You can import from a library "node_modules" or local dir.
+Either by "const myLocalModule = require('./some/local/file.js');"
+or "var React = require('react');" works.
+
+Examples:
+
+const doSomething = require('./doSomething.js'); //importing
+
+module.exports = function doSomething(n) { // do something } //exporting
+or
+var dep = require("dep"); //importing
+
+dep = { foo: function(){}, bar: 22 } //exporting
+module.exports = dep;
+
+What Node.js does with modules is, it
+WRAPS ALL THE CODE INSIDE A FUNCTION SCOPE.
+So the dep.js will look like below.
+
+function (exports, require, module, __filename, __dirname) {
+  const m = 1; module.exports.m = m;
+}
+So be it "__filename", "__dirname" or "module", they are not actually global but local to that particular module.
+The actual loading of any module using "require()" happens in 5 steps.
+RESOLUTION(calc paths etc) -> LOADING(pulls the code in ongoing process)
+-> WRAPPING(to a function) -> EVALUATION(inside VM V8) -> CACHING(to reuse).
+So, basically Node.js never knows what symbols a CJS module is going to export
+until and unless the module is actually evaluated.
+
+
+ESM stands for "ES Modules". Lot of browsers uses ESM.
+
+ESM is Javascript's proposal to implement a standard module system.
+- ESM imports modules ASYNCHRONOUSLY
+- allows bundlers like Rollup to remove unnecessary code -> sites faster load.
+- is lexical and thus, the exported symbols are known before the code is actually evaluated
+- Can be called in HTML, just do:
+<script type="module"> import {func1} from 'my-lib'; func1(); </script>
+- allows "TREE SHAKING" - a form of dead code elimination.
+import arrayUtils from "array-utils"; // Import full array utilities - SLOWER
+import { unique, implode, explode } from "array-utils"; // FASTER, used only
+
+Examples:
+
+import React from 'react'; //importing
+import {foo, bar} from './myLib';
+
+export default function() { // your Function };
+export const function1() {...};
+export const function2() {...};

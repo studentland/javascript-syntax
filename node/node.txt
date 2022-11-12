@@ -1,0 +1,1107 @@
+
+NPM - prebuilded package manager allows maintain,
+external(not built-in), Node.js packages.
+Package - module + required files for environment.
+
+https://coderjony.com/blogs/list-all-node-modules-installed-globally-locally-in-nodejs/
+NPM
+Open terminal in project root level/server file folder.
+The "terminal location" or "project location" means same.
+
+npm install packageName -> into terminal location
+npm view packageName -> full info about installed package
+npm update -> update ALL packages in "package.json"
+npm uninstall packageName -> from terminal location
+npm ls -> print packages/modules full tree in terminal location
+npm list -g -> global installed modules structure. Full tree
+npm list -g --depth 0 -> structure include only module names
+npm list -> terminal location installed modules structure. Full tree
+
+Example:
+
+Terminal:
+npm install upper-case
+
+nodeServer.js:
+var uc = require('upper-case');
+us.upperCase("uppercase"); -> UPPERCASE
+
+
+
+The "node.js" - open source server environment,
+which allows to run JavaScript on the server.
+
+
+Node.js uses asynchronous programming!
+Node.js runs single-threaded, non-blocking,
+asynchronous programming, which is very memory efficient.
+Node.js can manage: files, databases, dynamic html pages.
+
+Node.js files contain tasks that will be executed on certain events.
+Node.js files must be initiated on the server before having any effect.
+Node.js files have extension ".js".
+
+
+The "require()" in Node.js, it's a built-in function
+with a special purpose: to load modules.
+
+var http = require('http');
+
+
+Create module for later export, using "exports" keyword.
+Code should be placed inside separated "myModuleName.js" file.
+
+exports.myDateTime = function () { return Date(); };
+
+
+Include module on top of the server file code, to use module later.
+
+var dt = require('./myModuleName');
+
+The "./" means the file placed on same level as server file.
+
+
+Create simple server.
+
+Create simple server file "myNodeServer.js",
+with new module imported at the top.
+
+var http = require('http');
+var dt = require('./myModuleName');
+
+
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.write("The date and time are currently: " + dt.myDateTime());
+  res.write("<hr>"+req.url); //write url from request object from client
+  res.end(); // or .end("someText") or .end(textVar) without ".write"
+}).listen(8080);
+
+
+Initiate server file in console from server file level(inside server file folder).
+
+terminal:
+node myNodeServer.js
+
+browser url window:
+http://localhost:8080/ -> returns full date from server on your machine.
+
+
+Modules.
+
+The "HTTP" module can create an HTTP server that
+listens to server ports and gives a response back to the client.
+
+The function passed into the http.createServer() method, will be
+executed when someone tries to access the computer on port 8080.
+
+res -> represent response object.
+.writeHead(status, header) method creates the correct header for HTML page,
+required to display response properly.
+- status -> 200 -> all is OK. Also 404 etc.
+- header -> { 'Content-Type': 'text/html' } -> containing response headers
+
+req -> represent request object from client.
+
+
+The "fs". File System module. Allows you manage files.
+
+var fs = require('fs'); //read, create, update, delete, rename
+
+READ FILE
+.readFile('demofile1.html', function(err, data){
+    res.writeHead(...); res.write(data); return res.end();
+  }
+);
+
+CREATE FILE or UPDATE FILE
+
+fs.appendFile(...) -> append data to file end(or create new if no file)
+fs.appendFile('myFile.txt', 'text string', function (err) {
+    if (err) throw err;
+    console.log('Saved!');
+  }
+);
+
+fs.writeFile(...) -> replaces file and content if it exists(or create new)
+fs.writeFile('myFile.txt', 'text string!', function (err) {//same as above} );
+
+
+fs.open(...) -> open(or create if no file) file,
+using flags w ,r+ (read/write), r (default) and combinations.
+https://nodejs.org/api/fs.html#fsopenpath-flags-mode-callback
+
+fs.open(path[, flags[, mode]], callback)
+fs.open('myFile.txt', 'w', function (err, fileHandler) {//same as above} );
+
+The 'x' means -> operation fails, if file already exists.
+The 'a' -> append. The 's' -> synchronous mode. The 'w' -> write.
+'a', 'ax', 'a+', 'ax+', 'as', 'as+', 'r', 'r+', 'rs+'
+The 'rs+' has a very real impact on I/O performance so
+using this flag is not recommended unless it is needed.
+If synchronous operation is desired, something like "fs.openSync()" should be used.
+'w', 'wx', 'w+', 'wx+'
+Use "fs.ftruncate()" or "filehandle.truncate()" to reset the file contents.
+
+DELETE FILE
+fs.unlink('myFile.txt', function (err) {
+    if (err) throw err;
+    console.log('completed!');
+  }
+);
+
+RENAME FILE
+fs.rename('myFile.txt', 'yourFile.txt', function (err) {}
+
+
+
+The URL module.
+splits up a web address into readable parts.
+
+var url = require('url');
+var adr = 
+'http://localhost:8080/default.htm?year=2017&month=february';
+var q = url.parse(adr, true);
+q.host; -> 'localhost:8080'
+q.pathname; -> '/default.htm'
+q.search; -> '?year=2017&month=february'
+var qdata = q.query; -> { year: 2017, month: 'february' }
+qdata.month; -> 'february'
+
+
+Node.js EVENTS.
+
+Objects in Node.js can fire events.
+
+var fs = require('fs');
+var rs = fs.createReadStream('./demofile.txt');
+rs.on('open', function () { alert('File open'); } );
+
+
+Node.js CUSTOM EVENTS. Built-in module available.
+
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
+
+//Create an event handler:
+var myEventHandler = function () {
+  console.log('I hear a scream!');
+}
+
+//Assign the event handler to an event:
+eventEmitter.on('scream', myEventHandler);
+
+//Fire the 'scream' event:
+eventEmitter.emit('scream');
+
+
+Node.js Upload Files. "npm install formidable".
+https://www.w3schools.com/nodejs/nodejs_uploadfiles.asp
+
+var http = require('http');
+var formidable = require('formidable');
+var fs = require('fs');
+
+http.createServer(function (req, res) {
+  if (req.url == '/fileupload') {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      var oldpath = files.filetoupload.filepath;
+      var newpath = 'C:/Users/Your Name/' + files.filetoupload.originalFilename;
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.write('File uploaded and moved!');
+        res.end();
+      });
+ });
+  } else { //default html form code before uploading
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write('<form action="fileupload" method="post" enctype="multipart/form-data">');
+    res.write('<input type="file" name="filetoupload"><br>');
+    res.write('<input type="submit">');
+    res.write('</form>');
+    return res.end();
+  }
+}).listen(8080);
+
+
+Node.js Send an EMAIL. "npm install nodemailer".
+Use the username and password from your
+selected email provider to send an email.
+Text and html(with styling) properties available.
+https://www.w3schools.com/nodejs/nodejs_email.asp
+
+
+Node.js MYSQL. "npm install mysql".
+Terminal: sudo mariadb -> check available users
+SELECT user FROM mysql.user; -> system users list
+
+CREATE A DATABASE. Named "mydb".
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "yourusername",
+  password: "yourpassword"
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+  con.query("CREATE DATABASE mydb", function (err, result) {
+    if (err) throw err;
+    console.log("Database created");
+  });
+});
+
+
+CONNECT TO DATABASE and CREATE TABLE
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "yourusername",
+  password: "yourpassword"
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  alert("Connected!");
+  var sql = "CREATE TABLE customers (name VARCHAR(255), address VARCHAR(255))";
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    alert("Table created. The id:" + result.insertId);
+  });
+});
+
+Escaping to prevent sql injections.
+
+mysql.escape(userInput); -> using ".escape()" method
+
+sql = 'SELECT * FROM customers WHERE address = ?';
+con.query(sql, [userInput], function (err, result) {}; -> using "?"
+
+var sql = 'SELECT * FROM customers WHERE name = ? OR address = ?';
+con.query(sql, [name, adr], function (err, result) {} -> multivalues
+
+
+Some of Node.js built-in modules. The "moduleName" for bottom.
+https://www.w3schools.com/nodejs/ref_modules.asp
+"?" and [, param] - the optional parameter.
+
+
+The "assert" - testing expressions. https://nodejs.org/api/assert.html
+
+No returns, just throws error if check failed, and terminate execution.
+var assert = require('assert');
+
+methods:
+assert(expression, ?errText); assert(5>7); -> throw error if check is (0 or false)
+
+.deepEqual(v1, v2, ?errText) -> Checks if two values/objects are (==)
+.deepStrictEqual(v1, v2, ?errText) -> Checks if two values/objects are (===)
+.strictEqual() -> Checks if two values are (===)
+.equal(v1, v2, ?errText) -> Legacy, use ".strictEqual()".
+
+.match(string, regexp[, message]) -> throw if string DOES NOT MATCH regexp.
+.doesNotMatch(string, regexp[, message]) -> throw if string DOES MATCH regexp.
+
+.doesNotThrow(fn[, error][, message]) -> throw if function throw error. Not useful.
+
+.fail([message]) -> throws an "AssertionError" with error message
+
+.ifError(value) -> throws value if value is not undefined or null.
+This is useful when testing the error argument in callbacks.
+
+.notDeepStrictEqual(actual, expected[, message]) -> Checks if two values/objects are (!==).
+.notDeepEqual() -> Legacy, use ".notDeepStrictEqual()"
+
+.notStrictEqual(actual, expected[, message]) -> Checks if two values/objects are (!==)
+.notEqual() -> Legacy, use ".notStrictEqual()".
+.ok(value[, message]) -> Checks if a value is true. Same as ".equal(!!value, true, message)"
+
+.rejects(asyncFn[, error][, message]) -> waits the asyncFn promise, then check promise is rejected.
+Details x3 ways: https://nodejs.org/api/assert.html#assertrejectsasyncfn-error-message
+
+.throws(fn[, error][, message]) -> expects the function fn to throw an error.
+Due to the confusing error-prone notation, avoid a string as the second argument.
+The "error" CANNOT be a string, or "error" is assumed to be omitted.
+
+
+The "buffer" - handle fixed size binary data. https://nodejs.org/api/buffer.html
+
+Global Node.js object, not necessary to use "require()" syntax.
+var buf = Buffer.alloc(15); -> create empty Buffer of the length 15 bytes.
+or
+let buffer = require("buffer"); buffer.alloc(15); -> same as above, recommended.
+Buffer encoding UTF-8 can be specified as 'utf8', 'UTF8' or 'uTf8'.
+The 'utf16le' (alias: 'utf-16le'): and 'latin1'(Latin-1 stands for ISO-8859-1) is limited.
+
+Confusing therminology. From official docs.
+For text-to-binary encodings(buffer.from("text", "utf8")), the naming convention is:
+Convertng. Buffer -> string = decoding. String -> buffer = encoding.
+For binary-to-text encodings, the naming convention is reversed:
+Converting. Buffer -> string = encoding. String -> buffer = decoding.
+
+Buffer instances are also JavaScript "Uint8Array" and "TypedArray" instances.
+Buffer methods is same as "TypedArray". But API is little uncompatible.
+
+There are two ways to create new TypedArray instances from a Buffer:
+- const uint32array = new Uint32Array(buf); - using TypedArray constructor
+copy the buffer contents, as an array of integers, but not bytes.
+- const uint16array = new Uint16Array(
+  buf.buffer,
+  buf.byteOffset,
+  buf.length / Uint16Array.BYTES_PER_ELEMENT);
+create a TypedArray that shares its memory with the Buffer
+
+To create a new Buffer
+that shares the same allocated memory as a TypedArray instance:
+
+const a = new Uint16Array(2);
+a[0] = 5000; a[1] = 4000;
+const b1 = Buffer.from(arr); //<Buffer 88 a0> content of array
+// Shares memory with array "a".
+const b2 = Buffer.from(arr.buffer); //<Buffer 88 13 a0 0f>
+a[1] = 6000;
+// now: b1 -> <Buffer 88 a0>, b2 -> <Buffer 88 13 70 17>
+
+
+To use only a portion of the underlying ArrayBuffer
+by passing in byteOffset and length parameters.
+
+const arr = new Uint16Array(20); //arr.length -> 20
+const buf = Buffer.from(arr.buffer, 0, 16); //buf.length -> 16
+
+const iterBuf = Buffer.from( [1, 2, 3] );
+for (const b of iterBuf) {} // iterations allowed
+Also ".values()" ".keys()" ".entries()" returns buffer iterator
+
+
+Class Blob
+
+A "Blob" encapsulates immutable, raw data
+that can be safely shared across multiple worker threads.
+
+let blob = new buffer.Blob([sources[, options]]);
+
+- source - array of string or any mix of such objects
+String sources are encoded and copied as UTF-8 byte sequences.
+Unmatched surrogate pairs within each string part will be replaced
+by Unicode U+FFFD replacement characters.
+
+- options <Object> {endings: <string>, type: <string>}
+The intent is for type to convey the MIME media type of the data,
+but no validation is performed.
+
+blob.arrayBuffer() -> <Promise> with an <ArrayBuffer> copy of blob data.
+blob.size -> bytes
+blob.slice([start, [end, [type]]]) -> new blob
+blob.stream() -> <ReadableStream> allows blob content to be readed
+blob.text() -> <Promise> decoded as UTF-8 string
+blob.type -> <string> blob content type
+
+Once a <Blob> object is created, it can be sent
+via MessagePort to multiple destinations without
+transferring or immediately copying the data.
+The data contained by the Blob is copied only
+when the "arrayBuffer()" or "text()" methods are called.
+
+import { Blob, Buffer } from 'buffer';
+import { setTimeout as delay } from 'timers/promises';
+
+const blob = new Blob(['hello there']);
+
+const mc1 = new MessageChannel();
+const mc2 = new MessageChannel();
+
+mc1.port1.onmessage = async ({ data }) => {
+  console.log(await data.arrayBuffer()); mc1.port1.close();
+};
+
+mc2.port1.onmessage = async ({ data }) => {
+  await delay(1000);
+  console.log(await data.arrayBuffer()); mc2.port1.close();
+};
+
+mc1.port2.postMessage(blob);
+mc2.port2.postMessage(blob);
+
+// The Blob is still usable after posting.
+blob.text().then(console.log);
+
+
+Class Buffer
+
+Static method: Buffer.alloc(size[, fill[, encoding]])
+If "fill" <string> is undefined, the Buffer will be zero-filled.
+The "size" <integer>. if too big or negative -> error.
+
+Static method: Buffer.allocUnsafe(size)
+The contents of the newly created Buffer
+are unknown and may contain sensitive data.
+
+Static method: Buffer.allocUnsafeSlow(size)
+To retain a small chunk of memory from a pool create an
+un-pooled Buffer instance using Buffer.allocUnsafeSlow()
+and then copying out the relevant bits.
+
+Use "buf.fill(0)" to initialize such Buffer instances with zeroes.
+
+Static method: Buffer.byteLength(string[, encoding])
+Static method: Buffer.compare(buf1, buf2) is "buf1.compare(buf2)".
+Static method: Buffer.concat(list[, totalLength]) -> <Buffer>
+- list <Buffer[]> | <Uint8Array[]> instances to concatenate.
+- totalLength <integer> limit for "list" option.
+Static method: Buffer.from(array) -> <Buffer> from array<integer>
+Static method: Buffer.from(arrayBuffer[, byteOffset[, length]])
+- <arrayBuffer> can be <TypeArray>.buffer etc.
+Static method: Buffer.from(buffer)
+Static method: Buffer.from(object[, offsetOrEncoding[, length]])
+Static method: Buffer.from(string[, encoding])
+Static method: Buffer.isBuffer(obj) -> Boolean
+Static method: Buffer.isEncoding(encoding) -> true if correct "encoding"
+
+
+methods:
+.alloc(integerBytesLength) -> create sized, empty buffer
+.allocUnsafe(integerBytesLength) -> non-zero filled, sized, buffer
+.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])
+  -> 0 if target is the same as buf
+  -> 1 if target should come before buf when sorted.
+  -> -1 if target should come after buf when sorted.
+.copy(target[, targetStart[, sourceStart[, sourceEnd]]])
+.entries() .keys() .values() -> iterator
+.equals(otherBuffer) -> Boolean
+buf.fill(value[, offset[, end]][, encoding]) -> <Buffer> ref to buf
+.includes(value[, byteOffset][, encoding]) -> <boolean>
+.indexOf(value[, byteOffset][, encoding]) -> <integer>
+.lastIndexOf(value[, byteOffset][, encoding]) -> <integer>
+.length -> <integer> bytes
+.read...([offset]) -> group of methods to read numbers from buf
+.subarray([start[, end]]) -> <Buffer> ref to same memory BUT part
+.swap...() -> <Buffer> group methods to interprets as number array
+.toJSON() -> <Object> similar functionality as "JSON.stringify()"
+.toString([encoding[, start[, end]]])
+- for encoding "utf8" each invalid byte is replaced
+with the replacement character U+FFFD.
+.write(string[, offset[, length]][, encoding])
+.write...(value[, offset]) -> group of methods to write numbers
+
+
+BUFFER MODULE APIs, available only via
+the buffer module accessed using require('buffer').
+https://nodejs.org/api/buffer.html#buffer-module-apis
+Legacy, Deprecated, Experimental, and Specific generaly.
+.INSPECT_MAX_BYTES
+.transcode(source, fromEnc, toEnc)
+.constants.MAX_LENGTH
+.constants.MAX_STRING_LENGTH
+
+The "--zero-fill-buffers" command-line option.
+$ node --zero-fill-buffers
+> Buffer.allocUnsafe(5);
+<Buffer 00 00 00 00 00>
+
+
+The "crypto" - cryptographic functionality that includes
+a set of wrappers for OpenSSL's hash, HMAC,
+cipher, decipher, sign, and verify functions.
+
+Example:
+
+//encrypt text 'abc'
+const crypto = require('crypto');
+var mykey = crypto.createCipher('aes-128-cbc', 'mypassword');
+var mystr = mykey.update('abc', 'utf8', 'hex')
+mystr += mykey.final('hex');
+console.log(mystr); //34feb914c099df25794bf9ccb85bea72
+
+//dectypt text 'abc'
+var mystr = mykey.update('34feb914c099df25794bf9ccb85bea72', 'hex', 'utf8')
+mystr += mykey.final('utf8');
+console.log(mystr); //abc
+
+
+.getCiphers -> array of supported cipher algorithms
+.createCipher(algorithm, password[, options]) -> <Object>
+.createDecipher(algorithm, password[, options]) -> <Object>
+
+Encrypts buffer using a private key.
+.privateEncrypt(privateKey, buffer) -> <Buffer> encrypted content.
+
+Decrypts buffer(encrypted earlier) using a private key:
+.privateDecrypt(privateKey, buffer) -> <Buffer> decrypted content.
+- privateKey <Object> | <string> | <ArrayBuffer> | <Buffer> |
+<TypedArray> | <DataView> | <KeyObject> | <CryptoKey>
+- - oaepHash <string> The hash function Default: 'sha1'
+- - ?oaepLabel <string> | <ArrayBuffer> | <Buffer> | <TypedArray> |
+<DataView> The label to use for OAEP padding.
+- - ?padding <crypto.constants> f.e.:
+- - - crypto.constants.RSA_NO_PADDING
+- - - crypto.constants.RSA_PKCS1_PADDING
+- - - crypto.constants.RSA_PKCS1_OAEP_PADDING.
+- buffer <string> | <ArrayBuffer> | <Buffer> | <TypedArray> | <DataView>
+
+
+Encrypts data using a public key.
+.publicEncrypt(key, buffer) -> <Buffer> encrypted content.
+
+Decrypts data using a public key.
+.publicDecrypt(key, buffer) -> <Buffer> decrypted content
+- key <Object> | <string> | <ArrayBuffer> | <Buffer> |
+<TypedArray> | <DataView> | <KeyObject> | <CryptoKey>
+A PEM encoded public or private key.
+- - ?passphrase <string> | <ArrayBuffer> | <Buffer> | <TypedArray> |
+<DataView> passphrase for the private key.
+- - ?padding <crypto.constants> f.e.:
+- - - crypto.constants.RSA_NO_PADDING
+- - - crypto.constants.RSA_PKCS1_PADDING
+- - - encoding <string> use if buffer, key, or passphrase are strings.
+- buffer <string> | <ArrayBuffer> | <Buffer> | <TypedArray> | <DataView>
+
+Because RSA public keys can be derived from private keys,
+a private key may be passed instead of a public key.
+
+.randomBytes(size[, callback]) -> Creates random data
+- size <number> <= 2**31 - 1, of bytes to generate
+- callback <Function> (err <Error>, buf <Buffer>)
+If no callback passed returns <Buffer>
+
+Sets the engine for some or all OpenSSL function
+.setEngine(engine[, flags])
+- engine <string>
+- flags <crypto.constants>
+Default: crypto.constants.ENGINE_METHOD_ALL
+Also available crypto.constants.ENGINE_METHOD_...
+RSA DSA DH RAND EC CIPHERS DIGESTS
+PKEY_METHS PKEY_ASN1_METHS NONE
+
+
+https://nodejs.org/api/crypto.html#crypto-constants
+.constants -> <Object> containing Crypto Constants
+
+.fips -> true if a FIPS crypto provider is in use
+.createCipheriv() -> Creates a Cipher object using the specific algorithm, password and initialization vector
+.createDecipheriv() -> Creates a Decipher object using the specific algorithm, password and initialization vector
+.createDiffieHellman() -> Creates a DiffieHellman key exchange object
+.createECDH() -> Creates an Elliptic Curve Diffie Hellmann key exchange object
+.createHash() -> Creates a Hash object using the specified algorithm
+.createHmac() -> Creates a Hmac object using the specified algorithm and key
+.createSign() -> Creates a Sign object using the specified algorithm and key
+.createVerify() -> Creates a Verify object using the specified algorithm
+.getCurves() -> Returns an array of supported elliptic curves
+.getDiffieHellman() -> Returns a predefined Diffie Hellman key exchange object
+.getHashes() -> Returns an array of supported hash algorithms
+.pbkdf2() -> Creates a Password Based Key Derivation Function 2 implementation
+.pbkdf2Sync() -> Creates a synchronous Password Based Key Derivation Function 2 implementation
+.timingSafeEqual() -> Compare two Buffers and returns true is they are equal, otherwise false
+
+
+
+The "dgram" Node.js Datagram Module - provides a way of working
+with Datagram sockets. It can be used to send messages
+from one computer/server to another.
+
+const dgram = require('dgram');
+const server = dgram.createSocket('udp4');
+
+server.on('error', (err) => { console.log(`server error:\n${err.stack}`);
+  server.close(); } );
+
+server.on('message', (msg, rinfo) => {
+  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+});
+
+server.on('listening', () => { const address = server.address();
+  console.log(`server listening ${address.address}:${address.port}`); } );
+
+server.bind(41234);
+// Prints: server listening 0.0.0.0:41234
+
+
+
+Class: dgram.Socket. Extends: <EventEmitter>
+https://nodejs.org/api/dgram.html#class-dgramsocket
+Events: close connect error listening message
+Some of Methods:
+.address() -> <Object> - address information for a socket.
+
+.bind([port][, address][, callback]) - listen for datagram messages.
+Bind SERVER socket to LOCAL server port and adress.
+It will listen to clients, allow/deny access etc.
+- port <integer> if 0 -> (OS random)
+- address <string> if not specified -> OS listen all adresses.
+- callback <Function> no parameters, called when binded.
+.bind(options[, callback]) - similar using options<Object>
+
+.close([callback]) - callback when socket has been closed
+
+.connect(port[, address][, callback]) - connect to REMOTE adress.
+Connect CLIENT to remote port and adress(server adress).
+Client socket will only receive messages from that remote peer.
+Client works with application under server control, implemented
+by server socket .bind() to server port.
+
+.disconnect() - disassociates a connected dgram.Socket
+from its remote address.
+
+.addMembership(multicastAddress[, multicastInterface])
+- multicastAddress <string>
+- multicastInterface <string>
+Tells the kernel to join a multicast group at the given multicastAddress
+and multicastInterface using the IP_ADD_MEMBERSHIP socket option.
+
+If the multicastInterface argument is not specified, the OS will choose
+one interface and will add membership to it.
+To add membership to every available interface,
+call addMembership multiple times, once per interface.
+
+.dropMembership(multicastAddress[, multicastInterface]) - leave group
+.remoteAddress() -> <Object> .address .family .port
+
+.send(msg[, offset, length][, port][, address][, callback])
+Broadcasts a datagram on the socket.
+- msg can be <string> | [<Buffer>, <Buffer>]
+<TypedArray> | <DataView> | <Array>
+- callback <Function> Called when the message has been sent.
+
+For CONNECTIONLESS sockets, the destination port and address
+MUST BE SPECIFIED.
+
+CONNECTED sockets, on the other hand,
+will use their associated remote endpoint, so
+the port and address arguments MUST NOT be set.
+
+
+.setSendBufferSize(size) - maximum socket send buffer in bytes.
+- size <integer> bytes
+
+Example:
+const dgram = require('dgram'); // Importing dgram module
+
+// create sockets for client and server
+var client = dgram.createSocket("udp4");
+var server = dgram.createSocket("udp4");
+
+server.on("message", function (msg) {
+    process.stdout.write("UDP String: " + msg + "\n");
+    process.exit();
+});
+
+server.on('listening', () => {
+    const a = server.address();
+    console.log(`server listening ${a.address}:${a.port}`);
+});
+
+// Binding server with port address
+// by using bind() method
+server.bind(1234, () => {
+    // Adding a multicast address for others to join
+    server.addMembership('224.0.0.114');
+});
+
+// Connecting the server with particular local host
+// and address by using connect() method
+server.connect(1234, "localhost", () => {
+    console.log("connected")
+})
+
+// Client sending message to server
+client.send("Hello", 0, 7, 1234, "localhost");
+
+The "server.connect" In example above added in v12.+
+F.e. kubuntu stable node.js v10.19.0 raise an error.
+If comment section with ".connect(...){ }" all work.
+
+
+Call results.
+A call on a socket that is not ready to send or
+no longer open may throw a Not running Error.
+
+dgram module functions.
+https://nodejs.org/api/dgram.html#dgram-module-functions
+
+.createSocket(options[, callback]) -> <dgram.Socket>
+- options <Object>
+- - type <string>: 'udp4' or 'udp6'
+- - some optional args
+.createSocket(type<string>[, callback]) -> short form
+
+
+The "DNS" Module.
+https://nodejs.org/api/dns.html
+
+Provides a way of performing name resolutions.
+
+const dns = require('dns');
+
+.getServers() -> array of IP of server
+
+.lookup(hostname[, options], callback) - Looks up a hostname.
+- callback: (err <Error>, address <string>, family <integer>
+
+.lookupService(address, port, callback) - resolves the given
+address and port into a host name and service
+
+.resolve(hostname[, rrtype], callback) - resolves hostname record types array
+- callback <Function>: err <Error>, records <string[]>
+
+.resolve4(hostname[, options], callback) - Looks up an IPv4 address.
+- callback <Function>: err <Error>, addresses <string[]> | <Object[]>
+includes an array of IPv4 addresses.
+.resolve6() - similar for IPv6
+
+.reverse(ip, callback) - Reverses an IP address into an array of hostnames
+- ip <string>
+- callback <Function>: err <Error>, hostnames <string[]>
+Example:
+const dns = require('dns');
+
+dns.resolve4('archive.org', (err, addresses) => {
+  if (err) throw err;
+  console.log(`addresses: ${JSON.stringify(addresses)}`);
+
+  addresses.forEach((a) => {
+    dns.reverse(a, (err, hostnames) => {
+      if (err) { throw err; }
+      console.log(`reverse for ${a}: ${JSON.stringify(hostnames)}`);
+    });
+  });
+});
+
+Output:
+addresses: ["207.241.224.2"]
+reverse for 207.241.224.2: ["www.archive.org"]
+
+
+.setServers([
+  '4.4.4.4',
+  '[2001:4860:4860::8888]',
+  '4.4.4.4:1053',
+  '[2001:4860:4860::8888]:1053',
+]) -> Sets the IP addresses of the servers
+
+
+... some more specific, and with params and callback.
+.resolveCname() - Looks up CNAME records for the specified hostname.
+.resolveMx() - Looks up mail exchange records for the specified hostname.
+.resolveNaptr() - Looks up regular expression based records for the specified hostname.
+.resolveNs() - Looks up name server records for the specified hostname.
+.resolveSoa() - Looks up a start of authority record for the specified hostname.
+.resolveSrv() - Looks up service records for the specified hostname.
+.resolvePtr() - Looks up pointer records for the specified hostname.
+.resolveTxt() - Looks up text query records for the specified hostname.
+
+
+DNS promises API.
+https://nodejs.org/api/dns.html#dns-promises-api
+Similar functionality using <Promise> vs callback.
+Accessible via require('dns').promises or require('dns/promises').
+
+const { Resolver } = require('dns').promises;
+const resolver = new Resolver();
+resolver.getServers(...)
+
+.setLocalAddress([ipv4][, ipv6])
+- ipv4 <string> Default: '0.0.0.0'
+- ipv6 <string> Default: '::0'
+
+
+Possible ERROR CODES of each dns query
+https://nodejs.org/api/dns.html#error-codes
+f.e. (there are lot of another codes in docs):
+- dns.NONAME: Given host name is not numeric.
+- dns.CANCELLED: DNS query cancelled.
+
+
+
+The "os" module OS-related methods and properties.
+
+const os = require('os');
+console.log("Platform: " + os.platform());
+console.log("Architecture: " + os.arch());
+
+.arch() -> the OS CPU architecture
+.constants -> <Object> OS's constants(signals, error codes etc.)
+.cpus() -> <Object[]> info about the computer's CPUs
+.EOL -> the end-of-line marker for the current OS '\n' vs '\r\n'
+.freemem() -> OS free memory
+.hostname() -> the hostname of the OS
+.loadavg() -> an array containing the load averages, (1, 5, and 15 minutes)
+.networkInterfaces() -> the network interfaces that has a network address
+.platform() -> OS's platform
+.release() -> OS's release
+.tmpdir() -> the OS's default directory for temporary files
+.totalmem() -> OS total memory
+.type() -> OS name
+.uptime() -> the uptime of the OS, in seconds
+.userInfo() -> information about the current user
+
+.endianness() -> the endianness of the CPU
+-> 'BE' for big or 'LE' for little endian version compiled.
+
+
+The "vm" - executing JavaScript on a virtual machine,
+like "eval()" of JavaScript.
+The vm module is not a security mechanism.
+Do NOT use it to run UNTRUSTED code.
+
+const vm = require("vm");
+
+.createContext() - Prepares a virtual machine, or sandbox, where you can execute scripts
+.isContext() -> true if sandbox created by ".createContext()"
+.runInContext() -> Executes code(JavaScript) with returns the result
+.runInDebug() -> Executes(code) inside the debug context
+.runInNewContext() -> Executes in new context with returns the result
+.runInThisContext() -> Executes in the global context, and returns the result
+
+Class: vm.Script - contain precompiled code for late execution
+let script = new vm.Script(code[, options])
+- code <string> to compile
+- options <Object> | <string>
+https://nodejs.org/api/vm.html#new-vmscriptcode-options
+
+.createCachedData() - can be used in vm.Script() option
+
+script.runInContext(contextifiedObject[, options<Object>])
+- contextifiedObject - is "vm.createContext()" result/return
+
+Example:
+const vm = require('vm');
+const context = { animal: 'cat', count: 2 };
+const script = new vm.Script('count += 1; name = "kitty";');
+vm.createContext(context);
+for (let i = 0; i < 10; ++i) { script.runInContext(context); }
+console.log(context);
+// Prints: { animal: 'cat', count: 12, name: 'kitty' }
+
+
+The "path" - manage file paths.
+
+.basename(path <string>, ext <string>) -> end of path(folder or filename)
+.delimiter -> OS delimiter
+.dirname(path <string>) -> directories of a path
+.extname(path <string>) -> the file extension of a path
+.isAbsolute(path) -> true if a path is an absolute path
+.normalize() - Normalizes the specified path, resolving '..' and '.'
+.parse(path) -> <Object> Formats a path string into a path object
+.posix -> an object containing POSIX specific properties and methods
+.sep -> <string> OS sep
+
+.resolve([...paths]) -> Resolves the specified paths into an absolute path
+path.resolve('/foo', '/bar', 'baz') -> /bar/baz
+path.resolve('/foo', 'bar', 'baz') -> /foo/bar/baz
+
+.relative(from<string>, to<string>) -> <string> relative from one to another path
+path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb');// -> '../../impl/bbb'
+
+.join([...paths]) -> <string> Joins the specified paths into one
+- ...paths <string> A sequence of path segments
+path.join('/foo', 'bar', 'baz/asdf', 'quux', '..'); //-> '/foo/bar/baz/asdf'
+path.join('/foo', 'bar', 'baz/asdf', 'quux', 'x..'); //-> '/foo/bar/baz/asdf/quux/x..'
+
+.format(pathObject <Object>) - formats a path object into a path string
+- pathObject any JavaScript object include props:
+- - dir <string>
+- - root <string>
+- - base <string>
+- - name <string>
+- - ext <string>
+
+
+
+The "util" - some utility functions.
+
+const util = require('util');
+
+Some of functionality:
+
+.debuglog(section<string>[, callback]) -> <Function>
+Writes debug messages to the error object.
+Example:
+const debuglog = util.debuglog('foo');
+debuglog('hello from foo [%d]', 123);
+
+.deprecate(fn, msg[, code]) -> <Function> marked as deprecated
+exports.obsoleteFunction = util.deprecate(() => {
+  // Do something here.
+}, 'obsoleteFunction() is deprecated. Use newShinyFunction() instead.');
+And DeprecationWarinnig will be emited using 'warning' event.
+
+.format(format[, ...args]) - Formats string, using the specified arguments
+util.format('%s:%s', 'foo', 'bar', 'baz'); //-> 'foo:bar baz'
+
+.inherits(constructor, superConstructor) - Inherits methods from one function into another
+Legacy. Use 'extends' keyword instead.
+
+Example:
+const EventEmitter = require('events');
+
+class MyStream extends EventEmitter {
+  write(data) {
+    this.emit('data', data);
+  }
+}
+
+const stream = new MyStream();
+
+stream.on('data', (data) => {
+  console.log(`Received data: "${data}"`);
+});
+stream.write('With ES6');
+
+.inspect(object<any>[, options]) - Inspects object -> the object as a string
+https://nodejs.org/api/util.html#utilinspectobject-showhidden-depth-colors
+
+Customizing util.inspect colors
+Color output (if enabled) of util.inspect is customizable globally
+via the util.inspect.styles and util.inspect.colors properties.
+
+
+.isDeepStrictEqual(val1<any>, val2<any>) -> <boolean>
+
+.promisify(original<Function>) -> <Function>
+Takes a function following the common error-first callback style,
+i.e. taking an (err, value) => ... callback as the last argument,
+and returns a version that returns promises.
+
+Example:
+const util = require('util');
+const fs = require('fs');
+const stat = util.promisify(fs.stat);
+stat('.')
+.then((stats) => {// Do something with `stats`})
+.catch((error) => {// Handle the error.});
+
+Example using async:
+const stat = util.promisify(fs.stat);
+async function callStat() { const stats = await stat('.');
+  console.log(`This directory is owned by ${stats.uid}`); }
+
+
+Class: util.TextDecoder
+implementation of the WHATWG Encoding Standard
+Example:
+const decoder = new TextDecoder();
+const u8arr = new Uint8Array([72, 101, 108, 108, 111]);
+console.log(decoder.decode(u8arr)); // Hello
+
+Supported encodings.
+https://nodejs.org/api/util.html#whatwg-supported-encodings
+
+Class: util.TextEncoder - only support UTF-8 encoding.
+.encodeInto(src, dest)
+- src <string> The text to encode.
+- dest <Uint8Array> The array to hold the encode result.
+-> <Object>:
+.read <number> The read Unicode code units of src.
+.written <number> The written UTF-8 bytes of dest.
+
+.types.isAsyncFunction(value<any>) -> <boolean>
+Also group of methods to check types of objects.
+.types.is...
+
+
+The "console" module provides a simple debugging console
+that is similar to the JavaScript console mechanism
+provided by web browsers.
+
+The module exports two specific components:
+- A Console class with methods such as
+console.log(), console.error() and console.warn()
+that can be used to write to any Node.js stream.
+- A global console instance configured to write to
+process.stdout and process.stderr.
+The global console can be used without calling require('console').
+
+Example: global console
+console.log('hello world');
+// Prints: hello world, to stdout
+console.log('hello %s', 'world');
+// Prints: hello world, to stdout
+console.error(new Error('Whoops, something bad happened'));
+// Prints error message and stack trace to stderr:
+
+const name = 'Will Robinson';
+console.warn(`Danger ${name}! Danger!`);
+// Prints: Danger Will Robinson! Danger!, to stderr
+
+Example: Class Console
+const out = getStreamSomehow();
+const err = getStreamSomehow();
+const myConsole = new console.Console(out, err);
+myConsole.log('hello world');
+myConsole.error(new Error('error happened'));
+
+
+Class: Console
+
+new Console(options)
+- options<Object>:
+- - .stdout <stream.Writable>
+- - .stderr <stream.Writable>
+- - ?.ignoreErrors <boolean> Default: true.
+- - ?.colorMode <boolean> | <string> Set color support
+- - ?.inspectOptions <Object> Specifies options that are
+passed along to util.inspect().
+- - ?.groupIndentation <number> Set group indentation. Default: 2.
+
+const output = fs.createWriteStream('./stdout.log');
+const errorOutput = fs.createWriteStream('./stderr.log');
+// Custom simple logger
+const logger = new Console({ stdout: output, stderr: errorOutput });
+const count = 5;
+logger.log('count: %d', count); //-> In stdout.log: count 5
+
+.clear() - when stdout is a TTY, clear TTY. Else nothing.
+.count([label<string>]) - number of times console.count() has been
+called with the given label.
+.countReset([label]) - reset label counter to 0
+
+.debug(data[, ...args]) - alias for console.log()
+.error([data][, ...args]) - to stderr with newline
+.log([data][, ...args]) - to stdout with newline
+
+.dir(obj<any>[, options]) - util.inspect(obj) to stdout
+
+.table(tabularData[, properties]) - try to construct a table
+with the columns of the properties of tabularData
+
+.time([label]) - starts a labeled timer that can be used to compute
+the duration of an operation.
+.timeEnd([label]) - stops labeled timer
+.timeLog([label][, ...data]) - prints elapsed time for earlier .time([label])
+
+.trace([message][, ...args]) - prints to stderr with util.format()
+
+
+Inspector Only Methods. For V8 engine and require '--inspect' flag.
+https://nodejs.org/api/console.html#inspector-only-methods
+
+
+
+
+
+
++https://flaviocopes.com/node-core-modules/
+https://nodejs.org/api/readline.html#readline_example_read_file_stream_line_by_line
+https://nodejs.org/api/globals.html
+https://nodejs.org/api/repl.html#repl_commands_and_special_keys
+https://nodejs.org/api/cli.html#cli_no_warnings
+https://nodejs.org/api/modules.html#modules_require_cache
+https://nodejs.org/api/console.html
+https://nodejs.org/en/docs/guides/debugging-getting-started/
+https://nodejs.org/api/n-api.html#n_api_node_api
+https://nodejs.dev/learn/making-http-requests-with-nodejs
+https://nodejs.org/api/dns.html#dns_dns_lookup_hostname_options_callback
+https://nodejs.org/dist/latest-v13.x/docs/api/buffer.html#buffer_class_method_buffer_allocunsafe_size
+https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+https://www.sohamkamani.com/blog/javascript/making-a-node-js-test-runner/
+
+
+
+
+
+

@@ -1,0 +1,1921 @@
+"vue" pronouce like "view". https://vuejs.org
+
+js framework for ui building.
+
+Two CORE FEATURES of Vue:
+
+- Declarative Rendering: Vue extends standard HTML
+with a template syntax that allows us to declaratively
+describe HTML output based on JavaScript state.
+
+- Reactivity: Vue automatically tracks JavaScript state changes
+and efficiently updates the DOM when changes happen.
+
+Example, minimal:
+
+"js file"
+import { createApp } from 'vue'
+
+createApp({
+  data() {
+    return {
+      count: 0
+    }
+  }
+}).mount('#app')
+
+"html template file"
+<div id="app">
+  <button @click="count++">
+    Count is: {{ count }}
+  </button>
+</div>
+
+Result is button, every click button label changes to +1 click.
+
+Vue can be used in different ways:
+
+- Enhancing static HTML without a build step
+- Embedding as Web Components on any page
+- Single-Page Application (SPA)
+- Fullstack / Server-Side-Rendering (SSR)
+- Jamstack / Static-Site-Generation (SSG)
+- Targeting desktop, mobile, WebGL or even the terminal
+
+
+Single File Component format SFC (*.vue file):
+Example as above, but written in SFC format:
+<script>
+export default {
+  data() {
+    return {
+      count: 0
+    }
+  }
+}
+</script>
+
+<template>
+  <button @click="count++">Count is: {{ count }}</button>
+</template>
+
+<style scoped>
+button {
+  font-weight: bold;
+}
+</style>
+
+
+API Styles
+Vue components can be authored in two different
+API styles:
+- Options API - define a component's logic using
+an object of options such as "data", "methods", and "mounted".
+Properties defined by options are exposed on "this" inside functions,
+which points to the component instance:
+- Composition API - define a component's logic using imported API functions. In SFCs, Composition API is typically used with "<script setup>". The "setup" attribute is a hint that makes Vue perform compile-time transforms that allow us to use Composition API with less boilerplate. For example, imports and top-level variables / functions declared in "<script setup>" are directly usable in the template.
+
+Example Option API:
+<script>
+export default {
+  // Properties returned from data() becomes reactive state
+  // and will be exposed on `this`.
+  data() {
+    return {
+      count: 0
+    }
+  },
+
+  // Methods are functions that mutate state and trigger updates.
+  // They can be bound as event listeners in templates.
+  methods: {
+    increment() {
+      this.count++
+    }
+  },
+
+  // Lifecycle hooks are called at different stages
+  // of a component's lifecycle.
+  // This function will be called when the component is mounted.
+  mounted() {
+    console.log(`The initial count is ${this.count}.`)
+  }
+}
+</script>
+
+<template>
+  <button @click="increment">Count is: {{ count }}</button>
+</template>
+
+
+Example Compositon API:
+<script setup>
+import { ref, onMounted } from 'vue'
+
+// reactive state
+const count = ref(0)
+
+// functions that mutate state and trigger updates
+function increment() {
+  count.value++
+}
+
+// lifecycle hooks
+onMounted(() => {
+  console.log(`The initial count is ${count.value}.`)
+})
+</script>
+
+<template>
+  <button @click="increment">Count is: {{ count }}</button>
+</template>
+
+
+A build setup allows us to use Vue Single-File Components (SFCs).
+Node.js must be instelled before "npm" used.
+You can use Vue with or without a BUILD STEP.
+Terminal:
+- npm init vue@latest -> to execute "create-vue" and create project
+- cd <your-project-name> -> jump into project folder
+- npm install -> install project packages
+- npm run dev -> run project to show result in browser
+
+Also "npm init vue@3" possible for use.
+
+If "no no" to all additional questions in project creation flow,
+then project size is about 34mb, if "yes yes" then 176mb.
+Also the default projects structures are different,
+at least because not used external router module.
+
+Line bottom is present only in full "yes" default project,
+so code are different enough from the start point.
+
+import { RouterLink, RouterView } from "vue-router";
+
+The default project reloading is slower than "React" default project.
+
+- npm run build - to build production release in "./dist" folder.
+The default "no no" project size is about 76kb.
+
+Production deployment guide link.
+https://vuejs.org/guide/best-practices/production-deployment.html
+
+
+To get started Without Build Tools - just paste this into html file.
+<script src="https://unpkg.com/vue@3"></script>
+
+<div id="app">{{ message }}</div>
+
+<script>
+  Vue.createApp({
+    data() {
+      return {
+        message: 'Hello Vue!'
+      }
+    }
+  }).mount('#app')
+</script>
+and open html file in browser. But in firefox this looks like just
+an empty white page with black text, but not as full futured app.
+
+In order to use Vue over native ES modules, use the following HTML instead:
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+
+<div id="app">{{ message }}</div>
+
+<script type="module">
+  import { createApp } from 'vue'
+
+  createApp({
+    data() {
+      return {
+        message: 'Hello Vue!'
+      }
+    }
+  }).mount('#app')
+</script>
+This too not work in firefox, it just show "{{message}}".
+
+After adding this
+<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.4/dist/es-module-shims.js"></script>
+before
+<script type="importmap"></script>
+the page in firefox showed "hello vue" black text on white screen.
+
+So recommended to use build way or chrome browser.
+The import-maps-based setup is NOT for PRODUCTION.
+
+
+Creating a Vue Application
+https://vuejs.org/guide/essentials/application.html
+
+Every Vue application starts by creating
+a new application instance with the "createApp" function.
+
+The object we are passing into createApp is in fact a component.
+Every app requires a "root component"
+that can contain other components as its children.
+
+An application instance won't render anything until its ".mount()"
+method is called. It expects a "container" argument, which can
+either be an actual DOM element or a selector string. The ".mount()"
+method should be called after all app configurations are done.
+
+Example:
+
+html DOM element
+<div id="app"></div>
+
+js code
+import { createApp } from 'vue'
+// import the root component App from a single-file component.
+import App from './App.vue'
+const app = createApp(App) // or createApp({... root component ...})
+app.mount('#app')
+
+Without a building step Vue will automatically use the container's
+"innerHTML" as the template if the root component does not already
+have a template option.
+- html
+<div id="app">
+  <button @click="count++">{{ count }}</button>
+</div>
+- js
+import { createApp } from 'vue'
+const app = createApp({ data() { return { count: 0 } } })
+app.mount('#app')
+
+
+App Configurations - https://vuejs.org/api/application.html
+
+The application instance exposes a ".config" to configure
+a few app-level options, f.e. defining an app-level error handler
+that captures errors from all descendent components.
+app.config.errorHandler = (err) => { /* handle error */ }
+
+
+The application instance also provides a few methods for registering
+app-scoped assets. For example, registering a component.
+
+app.component('TodoDeleteButton', TodoDeleteButton)
+
+This makes the TodoDeleteButton available for use anywhere in our app.
+
+Make sure to apply all app configurations before mounting the app!
+
+
+The createApp API allows multiple Vue applications
+each with its own scope for configuration and global assets:
+
+Example:
+const app1 = createApp({ /* ... */ })
+app1.mount('#container-1')
+
+const app2 = createApp({ /* ... */ })
+app2.mount('#container-2')
+
+If you are using Vue to enhance server-rendered HTML
+and only need Vue to control specific parts of a large page,
+create multiple small application instances
+and mount them on the elements they are responsible for.
+
+
+Template Syntax
+
+All Vue templates are syntactically valid HTML
+that can be parsed by spec-compliant browsers and HTML parsers.
+
+Under the hood, Vue compiles the templates into highly-optimized
+JavaScript code, to re-render DOM parts after the app changes.
+
+You can also directly write render functions instead of templates,
+with optional JSX support, but this is less compile-time optimized way.
+
+
+Text Interpolation (insertion)
+
+<span>Message: {{ msg }}</span>
+It will also be updated whenever the "msg" property changes.
+
+{{ }} represents data as plain text, not HTML.
+
+
+Raw HTML
+
+The double mustaches interprets the data as plain text, . In order to output real HTML, you will need to use the v-html directive:
+
+<p>Using text interpolation: {{ rawHtml }}</p>
+<p>Using v-html directive: <span v-html="rawHtml"></span></p>
+
+if rawHtml include code for another <span>, v-html include this new
+span inside parent span => <span><span>inner text</span></span>.
+And parent span with v-html attribute must be empty, or error rised.
+
+The "v-" prefix of "v-html" attribute called the Vue directive.
+
+The "v-html" for safe(not user) data only to prevent XSS vulnerabilities.
+
+The {{ }} can NOT be used inside html attributes.
+Use "v-bind" directive next way, to solve this.
+
+<div v-bind:id="dynamicId"></div>
+
+The "v-bind" directive will keep the element's id attribute in sync
+with the component's dynamicId property.
+If the bound value is null or undefined,
+then the attribute will be removed from the rendered element.
+
+Shorthand for "v-bind" is ":"
+<div :id="dynamicId"></div>
+
+Boolean Attributes. "v-bind" works little bit different in this case.
+<button :disabled="isButtonDisabled">Button</button>
+Means include "disabled" if "isButtonDisabled" value is truhly(not false).
+https://developer.mozilla.org/en-US/docs/Glossary/Truthy
+The "disabled" will also be included if the value is an empty string,
+maintaining consistency with <button disabled="">.
+For other falsy values the attribute will be omitted.
+
+
+Dynamically Binding Multiple Attributes.
+The obj
+data() { return { attObj: { id: 'container', class: 'wrapper' } } }
+The "v-bind"
+<div v-bind="objectOfAttrs"></div>
+
+
+Using JavaScript Expressions
+In Vue templates, JavaScript expressions can be used:
+- Inside text interpolations {{ }}
+- In the attribute value of Vue directives (attributes start with "v-")
+
+Example:
+{{ number + 1 }}
+{{ ok ? 'YES' : 'NO' }}
+{{ message.split('').reverse().join('') }}
+<div :id="`list-${id}`"></div>
+
+Each binding can only contain ONE SINGLE EXPRESSION,
+so the following will NOT work:
+
+<!-- this is a statement, not an expression: -->
+{{ var a = 1 }}
+
+<!-- flow control won't work either, use ternary expressions -->
+{{ if (ok) { return message } }}
+
+
+Calling Functions, will be called every component update.
+Example:
+<span :title="toTitleDate(date)"> {{ formatDate(date) }} </span>
+
+
+Restricted Globals Access
+https://github.com/vuejs/core/blob/main/packages/shared/src/globalsWhitelist.ts#L3
+
+Available globals in template expressions:
+Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,
+decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,
+Math,Number,Date,Array,Object,Boolean,String,
+RegExp,Map,Set,JSON,Intl,BigInt
+
+Globals not explicitly included in the list, for example
+user-attached properties on window, will not be accessible
+in template expressions. You can, however, explicitly define
+additional globals for all Vue expressions by adding them to
+"app.config.globalProperties".
+
+
+Directives - html attributes start from "v-" prefix.
+built-in https://vuejs.org/api/built-in-directives.html
+
+built-in suffixes: text, html, show, if, else, else-if,
+for, on, bind, model, slot, pre, once, memo, cloak.
+
+Some directives can take an "argument",
+denoted by a colon ":" after the directive name.
+
+<a v-bind:href="url"> ... </a>
+<!-- shorthand -->
+<a :href="url"> ... </a>
+
+<a v-on:click="doSomething"> ... </a>
+<!-- shorthand -->
+<a @click="doSomething"> ... </a>
+
+
+Use a JavaScript expression in a directive argument
+by wrapping it with square brackets:
+
+<a v-bind:[attributeName]="url"> ... </a>
+<!-- shorthand -->
+<a :[attributeName]="url"> ... </a>
+
+Here attributeName = "href" => "...v-bind:href=..."
+There are some constraints to the argument expression
+
+<a v-on:[eventName]="doSomething"> ... </a>
+<!-- shorthand -->
+<a @[eventName]="doSomething">
+
+for events
+
+Dynamic Argument Value Constraints
+
+string expected , with the exception of null, which can be used
+to remove the binding. Other non-string value
+will trigger a warning.
+
+Dynamic Argument Syntax Constraints
+
+Dynamic argument expressions have some syntax constraints
+because certain characters, such as spaces and quotes,
+are invalid inside HTML attribute names.
+
+For example, the following is invalid:
+<!-- This will trigger a compiler warning. -->
+<a :['foo' + bar]="value"> ... </a>
+
+To pass a complex dynamic argument, use a "computed property".
+
+With in-DOM templates, directly written in an HTML file,
+avoid naming keys with uppercase characters,
+as browsers will coerce attribute names into lowercase:
+
+<a :[someAttr]="value"> ... </a> => browser => someattr => code fail
+
+
+Modifiers
+
+Modifiers are special postfixes denoted by a dot, which indicate
+that a directive should be bound in some special way.
+For example, the ".prevent" modifier tells the "v-on" directive
+to call "event.preventDefault()" on the triggered event:
+
+<form @submit.prevent="onSubmit">...</form>
+
+
+Declaring Reactive State
+
+With "Options API", we use the "data" option
+to declare reactive state of a component.
+The instance properties are only added when
+the instance is first created, so, use "null", "undefined" or
+some other placeholder value for future properties.
+
+It is possible to add a new property directly to "this"
+without including it in "data". However, properties
+added this way will not be able to trigger reactive updates.
+
+Avoid using names for top-level "data" properties that start with
+"$" and "_", which used/reserved in Vue internally.
+
+You should avoid using arrow functions when defining methods,
+as that prevents Vue from binding the appropriate "this" value.
+
+The methods are accessible from within the component's template.
+Inside a template they are most commonly used as event listeners.
+<button @click="increment">{{ count }}</button>
+
+
+DOM Update Timing
+
+To wait for the DOM update to complete after a state change,
+you can use the nextTick() global API.
+import { nextTick } from 'vue'
+
+export default {
+  methods: {
+    increment() {
+      this.count++
+      nextTick(() => {
+        // access updated DOM
+      })
+    }
+  }
+}
+
+
+Deep Reactivity
+You can expect changes to be detected even
+when you mutate nested objects or arrays.
+
+export default {
+  data() {
+    return {
+      obj: {
+        nested: { count: 0 },
+        arr: ['foo', 'bar']
+      }
+    }
+  },
+  methods: {
+    mutateDeeply() {
+      // these will work as expected.
+      this.obj.nested.count++
+      this.obj.arr.push('baz')
+    }
+  }
+}
+It is also possible to explicitly create shallow reactive objects
+where the reactivity is only tracked at the root-level.
+
+
+Stateful Methods
+In some cases, we may need to dynamically create a method function.
+
+import { debounce } from 'lodash-es'
+
+export default {
+  methods: {
+    // Debouncing with Lodash
+    click: debounce(function () {
+      // ... respond to click ...
+    }, 500)
+  }
+}
+
+If multiple component instances share the same
+debounced function, they will interfere with one another.
+
+To keep each component instance's debounced function independent:
+
+export default {
+  created() {
+    // each instance now has its own copy of debounced handler
+    this.debouncedClick = _.debounce(this.click, 500)
+  },
+  unmounted() {
+    // also a good idea to cancel the timer
+    // when the component is removed
+    this.debouncedClick.cancel()
+  },
+  methods: {
+    click() {
+      // ... respond to click ...
+    }
+  }
+}
+
+
+Computed Properties - used to do not overload template logic.
+Do not used, example:
+- js file
+export default {
+  data() {
+    return {
+      author: {
+        name: 'John Doe',
+        books: [
+          'Vue 2 - Advanced Guide',
+          'Vue 3 - Basic Guide',
+          'Vue 4 - The Mystery'
+        ]
+      }
+    }
+  }
+}
+- template file
+<p>Has published books:</p>
+<span>{{ author.books.length > 0 ? 'Yes' : 'No' }}</span>
+
+Used, example:
+- js file
+export default {
+  data() {
+    return {
+      author: {
+        name: 'John Doe',
+        books: [
+          'Vue 2 - Advanced Guide',
+          'Vue 3 - Basic Guide',
+          'Vue 4 - The Mystery'
+        ]
+      }
+    }
+  },
+  computed: {
+    // a computed getter
+    publishedBooksMessage() {
+      // `this` points to the component instance
+      return this.author.books.length > 0 ? 'Yes' : 'No'
+    }
+  }
+}
+- template file
+<p>Has published books:</p>
+<span>{{ publishedBooksMessage }}</span>
+Computed properties recalculates only when data changes,
+if no changes then "get" method returns the cached value.
+
+
+Computed Caching vs Methods
+
+In cases where you do not want caching,
+use a method call instead.
+Same, but recalculates every "get" call.
+methods: {
+  calculateBooksMessage() {
+    return this.author.books.length > 0 ? 'Yes' : 'No'
+  }
+}
+
+
+Writable Computed
+Computed properties are by default getter-only.
+If you need a "writable" computed property,
+then provide both a getter and a setter.
+
+export default {
+  data() {
+    return {
+      firstName: 'John',
+      lastName: 'Doe'
+    }
+  },
+  computed: {
+    fullName: {
+      get() {
+        return this.firstName + ' ' + this.lastName
+      },
+      set(newValue) {
+        // destructuring assignment syntax used here.
+        [this.firstName, this.lastName] = newValue.split(' ')
+      }
+    }
+  }
+}
+
+
+Best Practices
+
+Don't make async requests or mutate
+the DOM inside a computed getter!
+
+It does not make sense to mutate a snapshot,
+so a computed return value should be treated as read-only
+and never be mutated - instead, update the source state
+it depends on to trigger new computations.
+
+
+Class and Style Bindings
+
+Vue provides special enhancements when "v-bind" is used
+with class and style. In addition to strings, the expressions
+can also evaluate to objects or arrays.
+
+Multiple classes example.
+- js file
+data() {
+  return {
+    isActive: true,
+    hasError: false
+  }
+}
+- template file
+<div
+  class="static"
+  :class="{ active: isActive, 'text-danger': hasError }"
+></div>
+- render
+<div class="static active"></div>
+
+if hasError becomes true, the class list will become
+"static active text-danger".
+
+
+The bound object.
+- js file
+data() {
+  return {
+    classObject: {
+      active: true,
+      'text-danger': false
+    }
+  }
+}
+- template file
+<div :class="classObject"></div>
+
+
+Bind to a computed property - best way.
+- js file
+data() {
+  return {
+    isActive: true,
+    error: null
+  }
+},
+computed: {
+  classObject() {
+    return {
+      active: this.isActive && !this.error,
+      'text-danger': this.error && this.error.type === 'fatal'
+    }
+  }
+}
+- template file
+<div :class="classObject"></div>
+
+
+Binding to Arrays.
+- js file
+data() {
+  return {
+    activeClass: 'active',
+    errorClass: 'text-danger'
+  }
+}
+- template file
+<div :class="[activeClass, errorClass]"></div>
+
+
+Toggle a class in the list conditionally.
+
+<div :class="[isActive ? activeClass : '', errorClass]"></div>
+
+Apply "errorClass" always, and "activeClass" if isActive is truthy.
+
+Same, use the object syntax inside array syntax:
+
+<div :class="[{ active: isActive }, errorClass]"></div>
+
+
+
+Binding Inline Styles
+
+Binding to Objects
+
+data() {
+  return {
+    activeColor: 'red',
+    fontSize: 30
+  }
+}
+
+<div :style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
+
+Although "camelCase" keys are recommended,
+":style" also supports "kebab-cased" CSS property keys.
+<div :style="{ 'font-size': fontSize + 'px' }"></div>
+
+A good idea to bind to a style object directly.
+data() {
+  return {
+    styleObject: {
+      color: 'red',
+      fontSize: '13px'
+    }
+  }
+}
+
+<div :style="styleObject"></div>
+
+
+Binding to Arrays - to an array of multiple style objects.
+<div :style="[baseStylesObj, overridingStylesObj]"></div>
+
+https://developer.mozilla.org/en-US/docs/Glossary/Vendor_Prefix
+When you use a CSS property that requires a vendor prefix
+in :style, Vue will automatically add the appropriate prefix.
+
+If the browser doesn't support a particular property then various
+prefixed variants will be tested to try to find one that is supported.
+
+
+You can provide an array of multiple (prefixed) values
+to a style property.
+
+<div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
+
+This will only render the last value in the array
+which the browser supports.
+
+
+Conditional Rendering
+
+"v-if" - conditionally render a block. Only be rendered
+if expression returns is truthy.
+"v-else-if" - optional
+"v-else" - optional element must immediately follow
+a "v-if" or a "v-else-if" element or it will not be recognized.
+Required order is "v-if" "v-else-if" "v-else".
+
+<button @click="awesome = !awesome">Toggle</button>
+<h1 v-if="awesome">Vue is awesome!</h1>
+<h1 v-else>Oh no 😢</h1>
+
+<div v-if="type === 'A'"> A </div>
+<div v-else-if="type === 'B'"> B </div>
+<div v-else-if="type === 'C'"> C </div>
+<div v-else> Not A/B/C </div>
+
+
+"v-if" "v-else-if" "v-else" on <template>
+Example tempate rendered only if statment truthy:
+<template v-if="ok">
+  <h1>Title</h1>
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+</template>
+
+
+
+"v-show" - another option for conditionally displaying an element.
+<h1 v-show="ok">Hello!</h1>
+
+The difference is that an element with "v-show" will always be
+rendered and remain in the DOM;
+"v-show" only toggles the display CSS property of the element.
+
+"v-show" doesn't support the <template> element,
+and does not work with "v-else".
+
+So prefer "v-show" if you need to toggle something very often,
+and prefer "v-if" if the condition is unlikely to change at runtime.
+
+
+Not recommended to use "v-if" and "v-for" on the same element.
+
+
+Use "v-for" directive to render a list of items based on an array.
+
+data() {
+  return {
+    items: [{ message: 'Foo' }, { message: 'Bar' }]
+  }
+}
+
+<li v-for="item in items">
+  {{ item.message }}
+</li>
+
+
+"v-for" optional second alias for the "index" of the current "item".
+
+data() {
+  return {
+    parentMessage: 'Parent',
+    items: [{ message: 'Foo' }, { message: 'Bar' }]
+  }
+}
+
+<li v-for="(item, index) in items">
+  {{ parentMessage }} - {{ index }} - {{ item.message }}
+</li>
+
+"v-for" is similar with js .forEach() method of array.
+
+Use "of" as the delimiter instead of "in",
+so that it is closer to JavaScript's syntax for iterators.
+
+<div v-for="item of items"></div>
+
+
+Use "v-for" to iterate through the properties of an object:
+<ul>
+  <li v-for="value in myObject">
+    {{ value }}
+  </li>
+</ul>
+
+and alias for "key" too:
+
+<li v-for="(value, key) in myObject">
+  {{ key }}: {{ value }}
+</li>
+
+and for "index" too:
+
+<li v-for="(value, key, index) in myObject">
+  {{ index }}. {{ key }}: {{ value }}
+</li>
+
+
+"v-for" with a Range
+<span v-for="n in 10">{{ n }}</span>
+Note here n starts with an initial value of 1 instead of 0.
+
+
+"v-for" on <template>
+<ul>
+  <template v-for="item in items">
+    <li>{{ item.msg }}</li>
+    <li class="divider" role="presentation"></li>
+  </template>
+</ul>
+
+
+Correct way of using "v-for" with "v-if"
+<template v-for="todo in todos">
+  <li v-if="!todo.isComplete">
+    {{ todo.name }}
+  </li>
+</template>
+
+
+Maintaining State with "key"
+To track each node's identity, and thus reuse and reorder existing
+elements, provide a unique "key" attribute for each item:
+
+<div v-for="item in items" :key="item.id">
+  <!-- content -->
+</div>
+
+<template v-for="todo in todos" :key="todo.name">
+  <li>{{ todo.name }}</li>
+</template>
+
+"key" here is a special attribute being bound with "v-bind".
+It should not be confused with the property key variable
+when using "v-for" with an object.
+
+It is recommended to provide a "key" attribute
+with "v-for" whenever possible.
+
+
+
+Array Change Detection
+Vue wraps an observed array's mutation methods.
+push() pop() shift() unshift() splice() sort() reverse() -mutate on place.
+
+filter() concat() slice() - return new array.
+
+this.items = this.items.filter((item) => item.message.match(/Foo/))
+
+
+To display a filtered or sorted version of an array
+without actually mutating or resetting the original data,
+create a computed property that returns the filtered or sorted array.
+
+data() {
+  return {
+    numbers: [1, 2, 3, 4, 5]
+  }
+},
+computed: {
+  evenNumbers() {
+    return this.numbers.filter(n => n % 2 === 0)
+  }
+}
+
+<li v-for="n in evenNumbers">{{ n }}</li>
+
+
+In situations where computed properties are not feasible
+(e.g. inside nested "v-for" loops), you can use a method:
+
+data() {
+  return {
+    sets: [[ 1, 2, 3, 4, 5 ], [6, 7, 8, 9, 10]]
+  }
+},
+methods: {
+  even(numbers) {
+    return numbers.filter(number => number % 2 === 0)
+  }
+}
+
+<ul v-for="numbers in sets">
+  <li v-for="n in even(numbers)">{{ n }}</li>
+</ul>
+
+Be careful with reverse() and sort() in a computed property!
+These two methods will mutate the original array, which should be
+avoided in computed getters.
+Create a copy of the original array before calling these methods:
+
+return numbers.reverse() - BAD
+return [...numbers].reverse() - GOOD
+
+
+
+Listening to Events
+v-on:click="handler" or @click="handler" shorthand
+
+
+Handler value can be:
+
+- Inline Handler, for simple case
+data() {
+  return {
+    count: 0
+  }
+}
+
+<button @click="count++">Add 1</button>
+<p>Count is: {{ count }}</p>
+
+- Method Handler, for complex case
+data() {
+  return {
+    name: 'Vue.js'
+  }
+},
+methods: {
+  greet(event) {
+    // `this` inside methods points to the current active instance
+    alert(`Hello ${this.name}!`)
+    // `event` is the native DOM event
+    if (event) {
+      alert(event.target.tagName)
+    }
+  }
+}
+
+<button @click="greet">Greet</button>
+
+
+Calling Methods in Inline Handlers
+
+methods: {
+  say(message) {
+    alert(message)
+  }
+}
+
+<button @click="say('hello')">Say hello</button>
+<button @click="say('bye')">Say bye</button>
+
+
+Accessing Event Argument in Inline Handlers
+
+
+
+<!-- using $event special variable -->
+<button @click="warn('Form cannot be submitted yet.', $event)">
+  Submit
+</button>
+
+<!-- using inline arrow function -->
+<button @click="(event) => warn('Form cannot be submitted yet.', event)">
+  Submit
+</button>
+
+methods: {
+  warn(message, event) {
+    if (event) {
+      event.preventDefault()
+    }
+    alert(message)
+  }
+}
+
+
+
+https://vuejs.org/guide/essentials/event-handling.html#event-modifiers
+Event Modifiers
+Vue provides event modifiers for "v-on":
+.stop .prevent .self .capture .once .passive
+
+<!-- the click event's propagation will be stopped -->
+<a @click.stop="doThis"></a>
+
+<!-- the submit event will no longer reload the page -->
+<form @submit.prevent="onSubmit"></form>
+
+<!-- modifiers can be chained -->
+<a @click.stop.prevent="doThat"></a>
+
+<!-- just the modifier -->
+<form @submit.prevent></form>
+
+Using "@click.prevent.self" will prevent clicks default action
+on the element itself and its children while "@click.self.prevent"
+will only prevent clicks default action on the element itself.
+
+
+https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#parameters
+The .capture .once .passive modifiers mirror the options
+of the native addEventListener method.
+
+
+https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#improving_scrolling_performance_with_passive_listeners
+The .passive modifier is typically used with touch event listeners for improving performance on mobile devices.
+
+
+Do not use .passive and .prevent together. or browser warning.
+
+
+
+https://vuejs.org/guide/essentials/event-handling.html#key-modifiers
+Key Modifiers - listening for keyboard events with "v-on" or "@".
+
+You can directly use any valid key names exposed via
+"KeyboardEvent.key" as modifiers by converting them to kebab-case.
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+
+<input @keyup.page-down="onPageDown" />
+... handler will only be called if $event.key is equal to 'PageDown'.
+The "PageDown" => "page-down" in this case.
+
+
+Key Aliases - Vue provides aliases for the most used keys:
+.enter .tab .esc .space .up .down .left .right
+.delete (captures both "Delete" and "Backspace" keys)
+
+
+System Modifier Keys - .ctrl .alt .shift .meta .
+<!-- Alt + Enter -->
+<input @keyup.alt.enter="clear" />
+<!-- Ctrl + Click -->
+<div @click.ctrl="doSomething">Do something</div>
+
+The "keyup.alt.enter" will only trigger if you release a key while holding down "alt". It won't trigger if you release the "alt" key alone.
+
+
+
+The ".exact" Modifier - control system modifiers to trigger event.
+
+<!-- this will fire even if Alt or Shift is also pressed -->
+<button @click.ctrl="onClick">A</button>
+
+<!-- this will only fire when Ctrl and no other keys are pressed -->
+<button @click.ctrl.exact="onCtrlClick">A</button>
+
+<!-- this will only fire when no system modifiers are pressed -->
+<button @click.exact="onClick">A</button>
+
+
+
+Mouse Button Modifiers - .left .right .middle .
+
+
+
+https://vuejs.org/guide/essentials/forms.html#form-input-bindings
+Form Input Bindings
+
+Manually wire up value bindings and change event listeners:
+<input
+  :value="text"
+  @input="event => text = event.target.value">
+
+The "v-model" directive to simplify above example:
+<input v-model="text">
+
+
+The "v-model" can be used on inputs of different types, <textarea>,
+and <select> elements. It automatically expands to different DOM
+property and event pairs based on the element it is used on.
+
+- <input> with text types and <textarea> elements
+use value property and input event
+- <input type="checkbox"> and <input type="radio">
+use checked property and change event
+- <select> use value as a prop and change as an event
+
+The "v-model" will ignore the initial value, checked or selected
+attributes found on any form elements.
+It will always treat the current bound JavaScript state as
+the source of truth.
+You should declare the initial value on the JavaScript side,
+using the data option.
+
+
+Basic Usage
+
+<p>Message is: {{ message }}</p>
+<input v-model="message" placeholder="edit me" />
+
+<span>Multiline message is:</span>
+<p style="white-space: pre-line;">{{ message }}</p>
+<textarea v-model="message" placeholder="add multiple lines"></textarea>
+
+
+Inside <textarea> interpolation will not work. Use "v-model"
+
+<!-- bad, NOT work -->
+<textarea>{{ text }}</textarea>
+
+<!-- GOOD, will work -->
+<textarea v-model="text"></textarea>
+
+
+CHECKBOX basic example:
+<input type="checkbox" id="checkbox" v-model="checked" />
+<label for="checkbox">{{ checked }}</label>
+
+
+MULTIPLE CHECKBOXES to the same array or Set value
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+
+export default {
+  data() {
+    return {
+      checkedNames: []
+    }
+  }
+}
+
+<div>Checked names: {{ checkedNames }}</div>
+
+<input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+<label for="jack">Jack</label>
+
+<input type="checkbox" id="john" value="John" v-model="checkedNames">
+<label for="john">John</label>
+
+<input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+<label for="mike">Mike</label>
+... will autorefresh "checkedNames" array depends on checked items.
+
+
+RADIO
+
+<div>Picked: {{ picked }}</div>
+
+<input type="radio" id="one" value="One" v-model="picked" />
+<label for="one">One</label>
+
+<input type="radio" id="two" value="Two" v-model="picked" />
+<label for="two">Two</label>
+
+
+
+SELECT
+
+SINGLE select example:
+<div>Selected: {{ selected }}</div>
+
+<select v-model="selected">
+  <option disabled value="">Please select one</option>
+  <option>A</option>
+  <option>B</option>
+  <option>C</option>
+</select>
+
+For full IOS support is recommended to provide a disabled option
+with an empty value, as demonstrated in the example above.
+
+
+MULTIPLE select example (bound to array):
+<div>Selected: {{ selected }}</div>
+
+<select v-model="selected" multiple>
+  <option>A</option>
+  <option>B</option>
+  <option>C</option>
+</select>
+
+
+SELECT options can be dynamically rendered with "v-for":
+
+export default {
+  data() {
+    return {
+      selected: 'A',
+      options: [
+        { text: 'One', value: 'A' },
+        { text: 'Two', value: 'B' },
+        { text: 'Three', value: 'C' }
+      ]
+    }
+  }
+}
+
+<select v-model="selected">
+  <option v-for="option in options" :value="option.value">
+    {{ option.text }}
+  </option>
+</select>
+
+<div>Selected: {{ selected }}</div>
+... possibly more compact way for giant array of items. The "multiple"
+can be added above, with some warning about expected data type.
+
+
+
+Value Bindings for radio, checkbox, select options.
+
+CHECKBOX
+<input
+  type="checkbox"
+  v-model="toggle"
+  true-value="yes"
+  false-value="no" />
+
+The "true-value" and "false-value" are Vue-specific attributes
+that only work with "v-model".
+
+Here the toggle property's value will be set to 'yes'
+when the box is checked, and set to 'no' when unchecked.
+You can also bind them to dynamic values using "v-bind":
+
+<input
+  type="checkbox"
+  v-model="toggle"
+  :true-value="dynamicTrueValue"
+  :false-value="dynamicFalseValue" />
+
+
+RADIO
+
+<input type="radio" v-model="pick" :value="first" />
+<input type="radio" v-model="pick" :value="second" />
+
+
+SELECT Options
+
+<select v-model="selected">
+  <!-- inline object literal -->
+  <option :value="{ number: 123 }">123</option>
+</select>
+
+The "v-model" supports value bindings of non-string values as well!
+In the above example, when the option is selected,
+selected will be set to the object literal value of { number: 123 }.
+
+
+
+https://vuejs.org/guide/essentials/forms.html#modifiers
+MODIFIERS
+
+You can add the ".lazy" to sync after "change" instead of "input".
+<input v-model.lazy="msg" />
+
+
+Add ".number" to automatically typecast as a number.
+<input v-model.number="age" />
+
+If the value cannot be parsed with parseFloat(),
+then the original value is used instead.
+
+The number modifier is applied automatically
+if the input has type="number".
+
+
+To ".trim" user input white space automatically
+<input v-model.trim="msg" />
+
+
+
+https://vuejs.org/guide/essentials/lifecycle.html#lifecycle-diagram
+Lifecycle Hooks
+
+https://vuejs.org/api/options-lifecycle.html
+Lifecycle Hooks API reference
+General hooks:
+beforeCreate created beforeMount mounted beforeUpdate updated
+beforeUnmount unmounted errorCaptured activated deactivated
+
+serverPrefetch (SSR only - server side rendering)
+
+
+Avoid using arrow functions when declaring lifecycle hooks,
+to  be able to access the component instance via "this".
+
+
+
+https://vuejs.org/api/options-state.html#watch
+WATCHERS
+
+With Options API, use "watch" option for mutating the DOM,
+or changing another piece of state
+based on the result of an "async" operation.
+export default {
+  data() {
+    return {
+      question: '',
+      answer: 'Questions usually contain a question mark. ;-)'
+    }
+  },
+  watch: {
+    // whenever question changes, this function will run
+    question(newQuestion, oldQuestion) {
+      if (newQuestion.indexOf('?') > -1) {
+        this.getAnswer()
+      }
+    }
+  },
+  methods: {
+    async getAnswer() {
+      this.answer = 'Thinking...'
+      try {
+        const res = await fetch('https://yesno.wtf/api')
+        this.answer = (await res.json()).answer
+      } catch (error) {
+        this.answer = 'Error! Could not reach the API. ' + error
+      }
+    }
+  }
+}
+
+<p>
+  Ask a yes/no question:
+  <input v-model="question" />
+</p>
+<p>{{ answer }}</p>
+
+
+The "watch" option also supports a dot-delimited path as the key:
+
+export default {
+  watch: {
+    // Note: only simple paths. Expressions are not supported.
+    'some.nested.key'(newValue) {
+      // ...
+    }
+  }
+}
+
+
+Use a DEEP watcher to force the callback
+to fire on all nested mutations,
+because "watch" is shallow by default.
+
+export default {
+  watch: {
+    someObject: {
+      handler(newValue, oldValue) {
+        // Note: `newValue` will be equal to `oldValue` here
+        // on nested mutations as long as the object itself
+        // hasn't been replaced.
+      },
+      deep: true
+    }
+  }
+}
+
+Deep watch can be expensive when used on large data structures.
+
+To force a watcher's callback to be executed immediately:
+export default {
+  // ...
+  watch: {
+    question: {
+      handler(newQuestion) {
+        // this will be run immediately on component creation.
+      },
+      // force eager callback execution
+      immediate: true
+    }
+  }
+  // ...
+}
+
+
+To access the DOM in a watcher callback after Vue has updated it:
+export default {
+  // ...
+  watch: {
+    key: {
+      handler() {},
+      flush: 'post'
+    }
+  }
+}
+
+
+In the rare case where you need to stop a watcher before
+the owner component unmounts,
+the $watch() API returns a function for that:
+
+const unwatch = this.$watch('foo', callback)
+
+// ...when the watcher is no longer needed:
+unwatch()
+
+
+
+Template Refs
+
+The "ref" is a special attribute, allows us to obtain a direct reference
+to a specific DOM element or child component instance
+after it's mounted.
+
+Example The resulting "ref" is exposed on "this.$refs":
+<script>
+export default {
+  mounted() {
+    this.$refs.input.focus()
+  }
+}
+</script>
+
+<template>
+  <input ref="input" />
+</template>
+
+Note that you can only access the "ref" after the component is mounted. Or returns js "null" on the first render.
+
+When "ref" is used inside "v-for", the resulting "ref" value
+will be an array containing the corresponding elements:
+
+<script>
+export default {
+  data() {
+    return {
+      list: [
+        /* ... */
+      ]
+    }
+  },
+  mounted() {
+    console.log(this.$refs.items)
+  }
+}
+</script>
+
+<template>
+  <ul>
+    <li v-for="item in list" ref="items">
+      {{ item }}
+    </li>
+  </ul>
+</template>
+
+"ref" array does not guarantee the same order as the source array.
+
+
+The "ref" attribute can also be bound to a function.
+The function receives the element reference as the first argument:
+<input :ref="(el) => { /* assign el to a property or ref */ }">
+
+Above used a dynamic ":ref" binding so we can pass it a function
+instead of a "ref" name string. When the element is unmounted,
+the argument will be null.
+You can, of course, use a method instead of an inline function.
+
+
+
+COMPONENTS BASICS
+
+Defining a Component
+
+- using a build step as SFC(single-file component) in file ".vue":
+<script>
+export default {
+  data() {
+    return {
+      count: 0
+    }
+  }
+}
+</script>
+
+<template>
+  <button @click="count++">You clicked me {{ count }} times.</button>
+</template>
+
+- without a build step as a plain JavaScript with Vue-specific options:
+export default {
+  data() {
+    return {
+      count: 0
+    }
+  },
+  template: `
+    <button @click="count++">
+      You clicked me {{ count }} times.
+    </button>`
+}
+
+You can also use an ID selector pointing to an element
+(usually native <template> elements).
+Vue will use its content as the template source.
+
+The example above defines a single component and exports it
+as the default export of a .js file, but you can use
+named exports to export multiple components from the same file.
+
+
+To use a child component, we need
+to import it in the parent component.
+
+<script>
+import ButtonCounter from './ButtonCounter.vue'
+
+export default {
+  components: {
+    ButtonCounter
+  }
+}
+</script>
+
+<template>
+  <h1>Here is a child component!</h1>
+  <ButtonCounter />
+</template>
+
+To expose the imported component to our template,
+we need to register it with the "components" option. The component
+will then be available as a tag using the key it is registered under.
+
+Components can be reused.
+<h1>Here are many child components!</h1>
+<ButtonCounter />
+<ButtonCounter />
+
+
+In SFCs, it's recommended to use PascalCase tag names
+for child components to differentiate from native HTML elements.
+Although native HTML tag names are case-insensitive,
+Vue SFC is a compiled format so we are
+able to use case-sensitive tag names in it.
+We are also able to use "/>" to close a tag.
+
+
+If you are authoring your templates directly in a DOM,
+as the content of a native <template> element, your need to use
+kebab-case and explicit closing tags for components:
+<!-- if this template is written in the DOM -->
+<button-counter></button-counter>
+<button-counter></button-counter>
+<button-counter></button-counter>
+
+
+Passing Props into component, to use template for different pages.
+
+<!-- BlogPost.vue -->
+<script>
+export default {
+  props: ['title']
+}
+</script>
+
+<template>
+  <h4>{{ title }}</h4>
+</template>
+
+When a value is passed to a prop attribute,
+it becomes a property on that component instance.
+The value of that property is accessible
+within the template and on the component's this context,
+just like any other component property.
+
+A props number is not limited.
+Any value can be passed to any prop.
+Once a prop is registered, you can pass data to it as a custom attribute, like this:
+
+- expected render result
+<BlogPost title="My journey with Vue" />
+<BlogPost title="Blogging with Vue" />
+<BlogPost title="Why Vue is so fun" />
+
+- js
+export default {
+  // ...
+  data() {
+    return {
+      posts: [
+        { id: 1, title: 'My journey with Vue' },
+        { id: 2, title: 'Blogging with Vue' },
+        { id: 3, title: 'Why Vue is so fun' }
+      ] } } }
+
+- template with "v-for"
+<BlogPost
+  v-for="post in posts"
+  :key="post.id"
+  :title="post.title"
+/>
+
+
+
+Listening to events.
+
+- child component
+<script>
+export default {
+  props: ['title'],
+  emits: ['enlarge-text','reset-text']
+}
+</script>
+
+<template>
+  <div class="blog-post">
+    <h4>{{ title }}</h4>
+    <button @click="$emit('enlarge-text')">Enlarge text</button>
+    <button @click="$emit('reset-text')">Reset text</button>
+  </div>
+</template>
+
+- parent component
+<script>
+import BlogPost from './BlogPost.vue'
+  
+export default {
+  components: {
+    BlogPost
+  },
+  data() {
+    return {
+      posts: [
+        { id: 1, title: 'My journey with Vue' },
+        { id: 2, title: 'Blogging with Vue' },
+        { id: 3, title: 'Why Vue is so fun' }
+      ],
+      postFontSize: 1
+    }
+  },
+  methods:{
+    dislargeText(){this.postFontSize = 1}
+  }
+}
+</script>
+
+<template>
+  <div :style="{ fontSize: postFontSize + 'em' }">
+    <BlogPost
+      v-for="post in posts"
+      :key="post.id"
+      :title="post.title"
+      @enlarge-text="postFontSize += 0.1"
+      @reset-text="postFontSize = 1"
+    ></BlogPost>
+    <hr/>
+    <button @click="dislargeText">
+      dislarge text
+    </button>
+  </div>
+</template>
+
+Also work at least next three, tested:
+@reset-text=postFontSize = 1
+@reset-text=dislargeText()
+@reset-text=dislargeText
+
+
+
+https://vuejs.org/guide/components/slots.html
+Content Distribution with Slots - placeholders for content.
+
+- AlertBox.vue
+<template>
+  <div class="alert-box">
+    <strong>Error!</strong>
+    <br/>
+    <slot />
+  </div>
+</template>
+
+<style scoped>
+.alert-box {
+  color: #666;
+  border: 1px solid red;
+  border-radius: 4px;
+  padding: 20px;
+  background-color: #f8f8f8;
+}
+
+strong {
+  color: red;
+}
+</style>
+
+- App.vue
+<script>
+import AlertBox from './AlertBox.vue'
+
+export default {
+  components: { AlertBox }
+}
+</script>
+
+<template>
+  <AlertBox>
+    Something bad happened.
+  </AlertBox>
+</template>
+
+
+https://vuejs.org/guide/essentials/component-basics.html#dynamic-components
+Dynamic Components - for tabs switching simulation.
+
+<!-- Component changes when currentTab changes -->
+<component :is="currentTab"></component>
+
+the value passed to :is, above, can contain either:
+- the name string of a registered component
+- the actual imported component object
+
+- Post.vue
+<template>
+  <div class="tab">
+    Posts component
+  </div>
+</template>
+
+- Home.vue
+<template>
+  <div class="tab">
+    Home component
+  </div>
+</template>
+
+- App.vue
+<script>
+import Home from './Home.vue'
+import Posts from './Posts.vue'
+  
+export default {
+  components: {
+    Home,
+    Posts
+  },
+  data() {
+    return {
+      currentTab: 'Home',
+      tabs: ['Home', 'Posts']
+    }
+  }
+}
+</script>
+
+<template>
+  <div class="demo">
+    <button
+       v-for="tab in tabs"
+       :key="tab"
+       :class="['tab-button', { active: currentTab === tab }]"
+       @click="currentTab = tab"
+     >
+      {{ tab }}
+    </button>
+	  <component :is="currentTab" class="tab"></component>
+  </div>
+</template>
+
+<style>
+.demo {
+  font-family: sans-serif;
+  border: 1px solid #eee;
+  border-radius: 2px;
+  padding: 20px 30px;
+  margin-top: 1em;
+  margin-bottom: 40px;
+  user-select: none;
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: 6px 10px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #f0f0f0;
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+.tab-button:hover {
+  background: #e0e0e0;
+}
+.tab-button.active {
+  background: #e0e0e0;
+}
+.tab {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+</style>
+
+
+When switching between multiple components
+with <component :is="...">, a component will be unmounted
+when it is switched away from.
+To force the inactive components to stay "alive"
+use the built-in <KeepAlive> component.
+
+
+
+https://vuejs.org/guide/essentials/component-basics.html#dom-template-parsing-caveats
+DOM Template Parsing Caveats - bad way, but possible.
+
+It should be noted that the limitations discussed below only apply
+if you are writing your templates directly in the DOM.
+They do NOT apply if you are using string templates
+from the following sources:
+- Single-File Components
+- Inlined template strings (e.g. template: '...')
+- <script type="text/x-template">
+
+in DOM templates:
+
+- use only <!-- kebab-case in HTML -->
+<blog-post post-title="hello!" @update-post="onUpdatePost"></blog-post>
+
+- always include explicit closing tags. This "/>" NOT work properly.
+<my-component></my-component>
+
+- use the special is attribute for restricted elements such as
+<ul>, <ol>, <table>, <select>, which can include not all tags.
+- - Good
+<table>
+  <tr is="vue:blog-post-row"></tr>
+</table>
+- - Bad, will produce invalid content
+<table>
+  <blog-post-row></blog-post-row>
+</table>
+When used on native HTML elements, the value of "is"
+must be prefixed with "vue:" in order to be interpreted
+as a Vue component. This is required to avoid confusion
+with native customized built-in elements.
+

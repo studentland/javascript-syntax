@@ -1,5 +1,5 @@
 objects
-let x = {"key":"value,key2var:myvar};
+let x = {"key":"any value",key2var:myvar};
 
 not good objects, slow down system
 x = new String();        // Declares x as a String object

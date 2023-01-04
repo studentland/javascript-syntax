@@ -245,10 +245,10 @@ function myFunction(value, index, array) {return value>10;}
 arr = Array.from(any iterable or have .length property, f.e. string); return array
 
 let keys = arr.keys(); return iterator with array of indices
-for (let x of keys) {can useing x as index}
+for (let x of keys) {can use x as index}
 
 let enitries = arr.entries(); return iterator with array of [index,value] pairs
-for (let x of keys) {can useing x as x[0],x[1] pair}
+for (let x of keys) {can use x as x[0],x[1] pair}
 
 let isTrue = arr.includes("itemValue"); return Boolean, NaN also can be checked as value.
 

@@ -61,7 +61,7 @@ It is read only. str[0] = "A" gives no error (but does not work!)
 
 string to array
 "H E".split() -> ["H E"]
-"H E".split("") -> ["H","","E"]
+"H E".split("") -> ["H"," ","E"]
 "H E".split(" ") -> ["H","E"]
 
 search

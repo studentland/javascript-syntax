@@ -626,10 +626,10 @@ Primitive data types is string, number, boolean, undefined.
 Complex data types is function, object(also include array, null).
 
 The .constructor property.
-" ".constructor -> String(){[native code]}
-obj.constructor -> Object(){[native code]}
-arr.constructor -> Array(){[native code]}
-myFunction.constructor -> Function(){[native code]}
+" ".constructor -> function String(){[native code]}
+obj.constructor -> function Object(){[native code]}
+arr.constructor -> function Array(){[native code]}
+myFunction.constructor -> function Function(){[native code]}
 
 to check. F.e. if object is array then condition will true
 arr.constructor.toString().indexOf("Array") > -1;

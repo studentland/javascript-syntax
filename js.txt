@@ -233,8 +233,8 @@ function myFunction(value, index, array) {return value>10;}
 let allMin = arr7.some(myFunction); return true if some returns is true
 function myFunction(value, index, array) {return value>10;}
 
-arr.indexOf("value", ?strart) -> return first matching index from start(0) or -1
-arr.lastIndexOf("value", ?strart) -> return last matching index from start(0) or -1
+arr.indexOf("value", ?start) -> return first matching index from start(0) or -1
+arr.lastIndexOf("value", ?start) -> return last matching index from start(0) or -1
 
 arr.find(myFunction); return first value matching the function or undefined
 function myFunction(value, index, array) {return value>10;}
@@ -247,8 +247,8 @@ arr = Array.from(any iterable or have .length property, f.e. string); return arr
 let keys = arr.keys(); return iterator with array of indices
 for (let x of keys) {can use x as index}
 
-let enitries = arr.entries(); return iterator with array of [index,value] pairs
-for (let x of keys) {can use x as x[0],x[1] pair}
+let entries = arr.entries(); return iterator with array of [index,value] pairs
+for (let x of entries) {can use x as x[0],x[1] pair}
 
 let isTrue = arr.includes("itemValue"); return Boolean, NaN also can be checked as value.
 

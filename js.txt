@@ -479,11 +479,12 @@ The default case does not have to be the last case in a switch block.
 
 Checked === used,
 switch return default, in case of
-let x = switch(new Boolean(true)) {
-case true: "some text";
-default: "other text";
+let y = true
+switch(y) {
+case true: x = "some text";
+default: x = "other text";
 }
-Returns default.
+// Returns default. x -> "other text"
 
 Grouping allowed:
 case 4:
